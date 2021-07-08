@@ -8,7 +8,7 @@ class Project(models.Model):
     pass
 
 class NormalUser(AbstractUser):
-    is_sys_defined = models.BooleanField()
+    is_sys_defined = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
 
 class TeamMember(models.Model):
