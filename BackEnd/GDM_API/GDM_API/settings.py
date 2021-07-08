@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL = 'gdm_app.NormalUser'
 
 # Application definition
 
@@ -37,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'gdm_app'
 ]
 
 MIDDLEWARE = [
@@ -83,6 +85,7 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
