@@ -33,14 +33,14 @@ class Deadline(models.Model):
 
 class Project(models.Model):
     title = models.CharField(max_length=50)
-    main_deadline = models.ForeignKey('Deadline',on_delete=models.SET_NULL,null=True,related_name='main_deadline')
+    main_deadline = models.ForeignKey('Deadline',on_delete=models.SET_NULL,null=True,related_name='main_deadline',blank=True)
 
 
 class Task(models.Model):
     title = models.CharField(max_length=50)
-    creator = models.ForeignKey('NormalUser',on_delete=models.SET_NULL,null=True,related_name='creator')
-    assigned_to = models.ForeignKey('NormalUser',on_delete=models.SET_NULL,null=True,related_name='assigned_to')
-    assigned_to_team = models.ForeignKey('Team',on_delete=models.SET_NULL,null=True)
+    creator = models.ForeignKey('NormalUser',on_delete=models.SET_NULL,null=True,related_name='creator',blank=True)
+    assigned_to = models.ForeignKey('NormalUser',on_delete=models.SET_NULL,null=True,related_name='assigned_to',blank=True)
+    assigned_to_team = models.ForeignKey('Team',on_delete=models.SET_NULL,null=True,blank=True)
     project = models.ForeignKey('Project',on_delete=models.CASCADE)
     status_choices = [
         ('NC','Not Completed'),
@@ -56,7 +56,7 @@ class Task(models.Model):
 
 class Team(models.Model):
     name = models.CharField(max_length=50)
-    manager = models.ForeignKey('TeamManager',on_delete=models.SET_NULL,null=True,related_name='manager')
+    manager = models.ForeignKey('TeamManager',on_delete=models.SET_NULL,null=True,related_name='manager',blank=True)
     project = models.ForeignKey('Project',on_delete=models.CASCADE)
 
 class TeamMember(models.Model):
