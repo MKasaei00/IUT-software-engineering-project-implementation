@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   name: {
-    margin: "0.25rem",
+    margin: theme.spacing(0.5),
   },
 }));
 
