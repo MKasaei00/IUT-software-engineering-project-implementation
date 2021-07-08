@@ -1,25 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import { HashRouter } from "react-router-dom";
+import { connect } from "react-redux";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import * as creators from "./store/actions/index";
+import Login from "./components/Login/Login";
+import Router from "./routes/Router";
+
+class App extends Component {
+  state = {
+    err: "",
+  };
+
+  async componentDidMount() {
+    await this.props.get_me(() => {
+      this.setState({ err: "You are not login!" });
+    });
+  }
+
+  render() {
+    return (
+      <HashRouter basename="/">
+        {this.props.me ? <Router /> : <Login />}
+      </HashRouter>
+    );
+  }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    me: state.me,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    get_me: (err) => dispatch(creators.get_me(err)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
