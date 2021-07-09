@@ -2,7 +2,7 @@ import React from "react";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import moment from "moment";
 
-import classes from "./styles.css";
+import classes from "./style.module.css";
 
 const renderTime = ({ remainingTime }) => {
   const names = ["Seconds", "Minutes", "Hours", "Days", "Months", "Years"];
