@@ -10,9 +10,9 @@ import {
 } from "@material-ui/core";
 import Pagination from "@material-ui/lab/Pagination";
 import { Person, Assignment } from "@material-ui/icons";
-import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 import moment from "moment";
+import { connect } from "react-redux";
 
 import * as creators from "../../store/actions/index";
 
@@ -51,7 +51,7 @@ const Projects = (props) => {
 
   useEffect(() => {
     getProjects();
-  });
+  }, []);
 
   return (
     <Container className={classes.root} maxWidth="md">
@@ -60,12 +60,12 @@ const Projects = (props) => {
         spacing={3}
         direction="column"
         alignItems="center"
-        justify="center"
+        justifyContent="center"
       >
         {Array.isArray(props.projects) &&
           props.projects.map((project) => {
             return (
-              <Grid item xs={12} key={project.id}>
+              <Grid item xs={12} key={project.id} style={{ width: "100%" }}>
                 <Paper className={classes.paper} elevation={3}>
                   <Grid container spacing={3}>
                     <Grid item xs={6}>

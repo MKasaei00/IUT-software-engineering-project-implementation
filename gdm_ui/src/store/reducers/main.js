@@ -4,6 +4,8 @@ const initState = {
   me: null,
   projects: [],
   project: null,
+  tasks: [],
+  task: null,
 };
 
 const reducer = (state = initState, action) => {
@@ -14,6 +16,10 @@ const reducer = (state = initState, action) => {
       return { ...state, projects: action.projects };
     case types.set_project:
       return { ...state, project: action.project };
+    case types.set_tasks:
+      return { ...state, tasks: action.tasks };
+    case types.set_task:
+      return { ...state, task: action.task };
     default:
       return state;
   }

@@ -16,3 +16,10 @@ export const login = ({ email, password }, err) => {
     return data;
   }, err);
 };
+
+export const logout = (err) => {
+  return catchError(async () => {
+    const { data } = await users.post("/logout");
+    return data;
+  }, err);
+};
