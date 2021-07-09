@@ -5,8 +5,8 @@ class ProjectSerializer(serializers.ModelSerializer):
     members = serializers.SerializerMethodField(method_name='num_members')
     tasks = serializers.SerializerMethodField(method_name='num_tasks')
     deadline = serializers.SerializerMethodField(method_name='date_deadline')
-
-
+    roles = serializers.SerializerMethodField(method_name='get_roles')
+    
     def num_members(self,prj):
         total = 0
         total += ProjectManager.objects.filter(project__exact=prj).count()
@@ -21,8 +21,14 @@ class ProjectSerializer(serializers.ModelSerializer):
 
 
     def date_deadline(self,prj):
-        return prj.main_deadline.end_date
+        if prj.main_deadline is None:
+            return ""
+        return prj.main_deadline.end_date 
+
+
+    def get_roles(self,prj):
+        return self.context[prj.id]
 
     class Meta:
         model = Project
-        fields = ('id','title', 'deadline','members','tasks')
+        fields = ('id','title', 'deadline','members','tasks','roles')
