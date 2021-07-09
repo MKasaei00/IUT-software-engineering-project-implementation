@@ -56,6 +56,7 @@ const Login = (props) => {
     await props.login(email.value, password.value, (err) => {
       setErr(err);
     });
+    this.props.get_me(() => {});
   };
 
   return (
@@ -113,6 +114,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     login: (email, password, err) =>
       dispatch(creators.login({ email, password }, err)),
+    get_me: (err) => dispatch(creators.get_me(err)),
   };
 };
 

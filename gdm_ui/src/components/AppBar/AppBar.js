@@ -7,6 +7,9 @@ import IconButton from "@material-ui/core/IconButton";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
+import { connect } from "react-redux";
+
+import * as creators from "../../store/actions/index";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function MenuAppBar() {
+const MenuAppBar = (props) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -36,6 +39,12 @@ export default function MenuAppBar() {
     setAnchorEl(null);
   };
 
+  const logout = () => {
+    handleClose();
+    props.logout(() => {});
+    props.get_me(() => {});
+  };
+
   return (
     <AppBar position="static">
       <Toolbar>
@@ -43,7 +52,7 @@ export default function MenuAppBar() {
           GDM
         </Typography>
         <Typography variant="body1" className={classes.name}>
-          Mgh
+          {`${props.me.first_name} ${props.me.last_name}`}
         </Typography>
         <IconButton
           aria-label="account of current user"
@@ -69,9 +78,24 @@ export default function MenuAppBar() {
           open={open}
           onClose={handleClose}
         >
-          <MenuItem onClick={handleClose}>Logout</MenuItem>
+          <MenuItem onClick={logout}>Logout</MenuItem>
         </Menu>
       </Toolbar>
     </AppBar>
   );
-}
+};
+
+const mapStateToProps = (state) => {
+  return {
+    me: state.me,
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    get_me: (err) => dispatch(creators.get_me(err)),
+    logout: (err) => dispatch(creators.logout(err)),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(MenuAppBar);
