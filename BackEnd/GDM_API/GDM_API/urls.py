@@ -17,11 +17,17 @@ from django.contrib import admin
 from django.urls import path,include
 from rest_framework import routers
 from gdm_app import views
+from django.conf.urls import url
+from allauth.account.views import confirm_email
 
 router = routers.DefaultRouter()
 router.register(r'projects', views.ProjectView, 'Project')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include(router.urls))
+    path('api/', include(router.urls)),
+    url(r'^rest-auth/', include('rest_auth.urls')),
+    url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
+    url(r'^account/', include('allauth.urls')),
+    url(r'^accounts-rest/registration/account-confirm-email/(?P<key>.+)/$', confirm_email, name='account_confirm_email'),
 ]
