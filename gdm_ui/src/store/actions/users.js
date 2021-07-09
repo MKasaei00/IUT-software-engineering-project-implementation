@@ -19,7 +19,7 @@ export const login = ({ email, password }, err) => {
 
 export const logout = (err) => {
   return catchError(async (dispatch) => {
-    const { data } = await auth.get("/logout/");
+    const { data } = await auth.post("/logout/");
     dispatch({ type: types.set_me, me: null });
     return data;
   }, err);
