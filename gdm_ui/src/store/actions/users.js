@@ -10,7 +10,7 @@ export const get_me = (err) => {
   }, err);
 };
 
-export const login = (email, password, err) => {
+export const login = ({ email, password }, err) => {
   return catchError(async () => {
     const { data } = await users.post("/login", { email, password });
     return data;

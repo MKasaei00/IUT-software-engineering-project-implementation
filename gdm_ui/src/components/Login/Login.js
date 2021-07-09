@@ -54,7 +54,6 @@ const Login = (props) => {
     e.preventDefault();
     const { email, password } = e.target.elements;
     await props.login(email.value, password.value, (err) => {
-      console.log(err);
       setErr(err);
     });
   };
@@ -113,7 +112,7 @@ const Login = (props) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     login: (email, password, err) =>
-      dispatch(creators.login(email, password, err)),
+      dispatch(creators.login({ email, password }, err)),
   };
 };
 

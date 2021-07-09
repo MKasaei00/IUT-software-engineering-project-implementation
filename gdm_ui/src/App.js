@@ -20,7 +20,7 @@ class App extends Component {
   render() {
     return (
       <HashRouter basename="/">
-        {this.props.me ? <Router /> : <Login />}
+        <Router />
       </HashRouter>
     );
   }
