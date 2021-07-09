@@ -72,4 +72,4 @@ class TeamManager(models.Model):
 
 class ProjectManager(models.Model):
     base_user = models.ForeignKey('NormalUser',on_delete=models.CASCADE)
-    Project = models.ForeignKey('Project',on_delete=models.CASCADE)
+    project = models.ForeignKey('Project',on_delete=models.CASCADE)
