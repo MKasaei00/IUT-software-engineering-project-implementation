@@ -12,7 +12,7 @@ export const get_all_projects = ({ page, limit, search }, err) => {
         search,
       },
     });
-    dispatch({ type: types.set_projects, projects: data.projects });
+    dispatch({ type: types.set_projects, projects: data });
 
     return data.total;
   }, err);
@@ -21,6 +21,6 @@ export const get_all_projects = ({ page, limit, search }, err) => {
 export const get_project = ({ project_id }, err) => {
   return catchError(async (dispatch) => {
     const { data } = await projects.get(`/${project_id}`);
-    dispatch({ type: types.set_project, project: data.project });
+    dispatch({ type: types.set_project, project: data });
   }, err);
 };
