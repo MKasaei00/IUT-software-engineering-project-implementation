@@ -5,7 +5,7 @@ import { tasks, projects } from "../../axios/main";
 
 export const get_all_tasks = ({ project_id, page, limit, search }, err) => {
   return catchError(async (dispatch) => {
-    const { data } = await projects.get(`${project_id}/tasks`, {
+    const { data } = await projects.get(`${project_id}/tasks/`, {
       params: {
         page,
         limit,
@@ -20,7 +20,7 @@ export const get_all_tasks = ({ project_id, page, limit, search }, err) => {
 
 export const get_task = ({ task_id }, err) => {
   return catchError(async (dispatch) => {
-    const { data } = await tasks.get(`/${task_id}`);
+    const { data } = await tasks.get(`/${task_id}/`);
     dispatch({ type: types.set_task, task: data.task });
   }, err);
 };
