@@ -56,7 +56,7 @@ const Login = (props) => {
     await props.login(email.value, password.value, (err) => {
       setErr(err);
     });
-    this.props.get_me(() => {});
+    props.get_me(() => {});
   };
 
   return (

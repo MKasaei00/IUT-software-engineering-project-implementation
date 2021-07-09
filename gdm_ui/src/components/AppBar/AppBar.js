@@ -42,7 +42,6 @@ const MenuAppBar = (props) => {
   const logout = () => {
     handleClose();
     props.logout(() => {});
-    props.get_me(() => {});
   };
 
   return (
