@@ -26,19 +26,21 @@ class ProjectView(viewsets.ViewSet):
 
         for e in TeamManager.objects.filter(base_user__exact=self.request.user):
             queryset.add(e.team.project)
+            team_name = e.team.name
             if e.team.project.id in context:
-                context[e.team.project.id] += ["Team Manager"]
+                context[e.team.project.id] += ["Team Manager"+":"+team_name]
             else:
-                context[e.team.project.id] = ["Team Manager"]
+                context[e.team.project.id] = ["Team Manager"+":"+team_name]
 
 
 
         for e in TeamMember.objects.filter(base_user__exact=self.request.user):
             queryset.add(e.team.project)
+            team_name = e.team.name
             if e.team.project.id in context:
-                context[e.team.project.id] += ["Team Member"]
+                context[e.team.project.id] += ["Team Member"+":"+team_name]
             else:
-                context[e.team.project.id] = ["Team Member"]
+                context[e.team.project.id] = ["Team Member"+":"+team_name]
 
 
         serializer = ProjectSerializer(queryset,context=context,many=True)
@@ -61,20 +63,22 @@ class ProjectView(viewsets.ViewSet):
         for e in TeamManager.objects.filter(base_user__exact=self.request.user):
             if e.team.project.id == int(pk):
                 queryset.add(e.team.project)
+                team_name = e.team.name
                 if e.team.project.id in context:
-                    context[e.team.project.id] += ["Team Manager"]
+                    context[e.team.project.id] += ["Team Manager"+":"+team_name]
                 else:
-                    context[e.team.project.id] = ["Team Manager"]
+                    context[e.team.project.id] = ["Team Manager"+":"+team_name]
 
 
 
         for e in TeamMember.objects.filter(base_user__exact=self.request.user):
             if e.team.project.id == int(pk):
                 queryset.add(e.team.project)
+                team_name = e.team.name
                 if e.team.project.id in context:
-                    context[e.team.project.id] += ["Team Member"]
+                    context[e.team.project.id] += ["Team Member"+":"+team_name]
                 else:
-                    context[e.team.project.id] = ["Team Member"]
+                    context[e.team.project.id] = ["Team Member"+":"+team_name]
 
         if len(queryset) == 0:
             raise Http404
