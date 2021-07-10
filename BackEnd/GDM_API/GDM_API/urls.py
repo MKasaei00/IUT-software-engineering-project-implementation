@@ -33,6 +33,7 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('api/',include(task_router.urls)),
     path('api/',include(task_router_single.urls)),
+    path('api/teams/<int:pk>/members',views.get_team_members),
     url(r'^rest-auth/', include('rest_auth.urls')),
     url(r'^rest-auth/registration/', include('rest_auth.registration.urls')),
     url(r'^account/', include('allauth.urls')),
