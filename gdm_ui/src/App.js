@@ -1,20 +1,15 @@
 import React, { Component } from "react";
 import { HashRouter } from "react-router-dom";
 import { connect } from "react-redux";
+import { withSnackbar } from "notistack";
 
 import * as creators from "./store/actions/index";
 import Login from "./components/Login/Login";
 import Router from "./routes/Router";
 
 class App extends Component {
-  state = {
-    err: "",
-  };
-
   async componentDidMount() {
-    await this.props.get_me(() => {
-      this.setState({ err: "You are not login!" });
-    });
+    await this.props.get_me(this.props.enqueueSnackbar);
   }
 
   render() {
@@ -34,8 +29,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    get_me: (err) => dispatch(creators.get_me(err)),
+    get_me: (enqueueSnackbar) => dispatch(creators.get_me(enqueueSnackbar)),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(withSnackbar(App));

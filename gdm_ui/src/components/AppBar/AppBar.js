@@ -8,6 +8,7 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import { connect } from "react-redux";
+import { useSnackbar } from "notistack";
 
 import * as creators from "../../store/actions/index";
 
@@ -28,6 +29,7 @@ const useStyles = makeStyles((theme) => ({
 
 const MenuAppBar = (props) => {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
@@ -41,7 +43,7 @@ const MenuAppBar = (props) => {
 
   const logout = () => {
     handleClose();
-    props.logout(() => {});
+    props.logout(enqueueSnackbar);
   };
 
   return (
@@ -92,8 +94,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    get_me: (err) => dispatch(creators.get_me(err)),
-    logout: (err) => dispatch(creators.logout(err)),
+    get_me: (enqueueSnackbar) => dispatch(creators.get_me(enqueueSnackbar)),
+    logout: (enqueueSnackbar) => dispatch(creators.logout(enqueueSnackbar)),
   };
 };
 

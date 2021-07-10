@@ -3,24 +3,24 @@ import catchError from "../../hoc/catchError";
 
 import { auth } from "../../axios/main";
 
-export const get_me = (err) => {
+export const get_me = (enqueueSnackbar) => {
   return catchError(async (dispatch) => {
     const { data } = await auth.get("/user/");
     dispatch({ type: types.set_me, me: data });
-  }, err);
+  }, enqueueSnackbar);
 };
 
-export const login = ({ email, password }, err) => {
+export const login = ({ email, password }, enqueueSnackbar) => {
   return catchError(async () => {
     const { data } = await auth.post("/login/", { email, password });
     return data;
-  }, err);
+  }, enqueueSnackbar);
 };
 
-export const logout = (err) => {
+export const logout = (enqueueSnackbar) => {
   return catchError(async (dispatch) => {
     const { data } = await auth.post("/logout/");
     dispatch({ type: types.set_me, me: null });
     return data;
-  }, err);
+  }, enqueueSnackbar);
 };

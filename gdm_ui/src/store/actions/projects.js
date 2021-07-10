@@ -3,7 +3,7 @@ import catchError from "../../hoc/catchError";
 
 import { projects } from "../../axios/main";
 
-export const get_all_projects = ({ page, limit, search }, err) => {
+export const get_all_projects = ({ page, limit, search }, enqueueSnackbar) => {
   return catchError(async (dispatch) => {
     const { data } = await projects.get("/", {
       params: {
@@ -15,12 +15,12 @@ export const get_all_projects = ({ page, limit, search }, err) => {
     dispatch({ type: types.set_projects, projects: data });
 
     return data.total;
-  }, err);
+  }, enqueueSnackbar);
 };
 
-export const get_project = ({ project_id }, err) => {
+export const get_project = ({ project_id }, enqueueSnackbar) => {
   return catchError(async (dispatch) => {
     const { data } = await projects.get(`/${project_id}/`);
     dispatch({ type: types.set_project, project: data[0] });
-  }, err);
+  }, enqueueSnackbar);
 };

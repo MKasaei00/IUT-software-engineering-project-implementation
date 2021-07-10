@@ -10,6 +10,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { connect } from "react-redux";
+import { useSnackbar } from "notistack";
 
 import * as creators from "../../store/actions/index";
 
@@ -48,15 +49,12 @@ const useStyles = makeStyles((theme) => ({
 
 const Login = (props) => {
   const classes = useStyles();
-  const [err, setErr] = useState("");
-
+  const { enqueueSnackbar } = useSnackbar();
   const onSubmit = async (e) => {
     e.preventDefault();
     const { email, password } = e.target.elements;
-    await props.login(email.value, password.value, (err) => {
-      setErr(err);
-    });
-    props.get_me(() => {});
+    const res = await props.login(email.value, password.value, enqueueSnackbar);
+    if (res !== false) props.get_me(enqueueSnackbar);
   };
 
   return (
@@ -112,9 +110,9 @@ const Login = (props) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    login: (email, password, err) =>
-      dispatch(creators.login({ email, password }, err)),
-    get_me: (err) => dispatch(creators.get_me(err)),
+    login: (email, password, enqueueSnackbar) =>
+      dispatch(creators.login({ email, password }, enqueueSnackbar)),
+    get_me: (enqueueSnackbar) => dispatch(creators.get_me(enqueueSnackbar)),
   };
 };
 

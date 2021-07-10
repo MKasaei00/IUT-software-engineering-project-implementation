@@ -13,6 +13,7 @@ import Pagination from "@material-ui/lab/Pagination";
 import { Delete, Close, Check, MoreVert } from "@material-ui/icons";
 import { red, green, yellow } from "@material-ui/core/colors";
 import { Link } from "react-router-dom";
+import { useSnackbar } from "notistack";
 import { connect } from "react-redux";
 
 import Timer from "../Timer/Timer";
@@ -49,6 +50,8 @@ const useStyles = makeStyles((theme) => ({
 const Tasks = (props) => {
   const classes = useStyles();
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const [page, setPage] = useState(0);
   const [count, setCount] = useState(0);
 
@@ -57,7 +60,7 @@ const Tasks = (props) => {
   const getTasks = async (page = 1) => {
     const total = await props.get_all_tasks(
       { page, limit, project_id: props.projectId },
-      () => {}
+      enqueueSnackbar
     );
     const count = Math.ceil(total / limit);
     setCount(count);
@@ -154,9 +157,12 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    get_all_tasks: ({ project_id, page, limit, search }, err) =>
+    get_all_tasks: ({ project_id, page, limit, search }, enqueueSnackbar) =>
       dispatch(
-        creators.get_all_tasks({ page, limit, search, project_id }, err)
+        creators.get_all_tasks(
+          { page, limit, search, project_id },
+          enqueueSnackbar
+        )
       ),
   };
 };

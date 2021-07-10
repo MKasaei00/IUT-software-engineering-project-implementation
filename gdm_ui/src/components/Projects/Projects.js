@@ -13,6 +13,7 @@ import { Person, Assignment } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import moment from "moment";
 import { connect } from "react-redux";
+import { useSnackbar } from "notistack";
 
 import * as creators from "../../store/actions/index";
 
@@ -31,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Projects = (props) => {
   const classes = useStyles();
+  const { enqueueSnackbar } = useSnackbar();
 
   const [page, setPage] = useState(0);
   const [count, setCount] = useState(0);
@@ -38,7 +40,10 @@ const Projects = (props) => {
   const limit = 10;
 
   const getProjects = async (page = 1) => {
-    const total = await props.get_all_projects({ page, limit }, () => {});
+    const total = await props.get_all_projects(
+      { page, limit },
+      enqueueSnackbar
+    );
     const count = Math.ceil(total / limit);
     setCount(count);
   };
@@ -136,8 +141,10 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    get_all_projects: ({ page, limit, search }, err) =>
-      dispatch(creators.get_all_projects({ page, limit, search }, err)),
+    get_all_projects: ({ page, limit, search }, enqueueSnackbar) =>
+      dispatch(
+        creators.get_all_projects({ page, limit, search }, enqueueSnackbar)
+      ),
   };
 };
 
