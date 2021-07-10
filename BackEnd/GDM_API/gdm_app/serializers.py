@@ -1,13 +1,47 @@
 from django.db.models import fields
 from rest_framework import serializers
-from .models import Deadline, Project, ProjectManager,Team,Task, TeamManager, TeamMember
+from .models import Deadline, NormalUser, Project, ProjectManager,Team,Task, TeamManager, TeamMember
+"""
+class TeamSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Team
+        fields = '__all__'
 
 
+"""
+class NormalUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NormalUser
+        fields = ('id','first_name','last_name')
 
 class TaskSerializer(serializers.ModelSerializer):
+
+    """
+    deadline = serializers.SerializerMethodField(method_name='date_deadline')
+    assigned_to = serializers.SerializerMethodField(method_name='get_assigned_to')
+    assigned_to_team = serializers.SerializerMethodField(method_name='get_assigned_to_team')
+    def date_deadline(self,tsk):
+        if tsk.deadlines.count() == 0:
+            return ""
+        return tsk.deadlines.first().end_date 
+
+
+    def get_assigned_to(self,tsk):
+        if "assigned_to" not in self.context:
+            return None
+        return NormalUserSerializer(self.context["assigned_to"]).data
+
+    def get_assigned_to_team(self,tsk):
+        if "assigned_to_team" not in self.context:
+            return None
+        return TeamSerializer(self.context["assigned_to_team"]).data
+    """
+    creator = NormalUserSerializer()
     class Meta:
+        exclude = ['project']
         model = Task
-        fields = '__all__'
+        #fields = '__all__'
+        depth = 1
 
 
 
