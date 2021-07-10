@@ -24,9 +24,15 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(2),
   },
-  button: {
+  buttons: {
     flexGrow: 1,
     textAlign: "right",
+    display: "flex",
+    justifyContent: "flex-end",
+    flexWrap: "wrap",
+  },
+  button: {
+    margin: theme.spacing(1, 0, 1, 1),
   },
 }));
 
@@ -73,14 +79,15 @@ const Projects = (props) => {
               <Grid item xs={12} key={project.id} style={{ width: "100%" }}>
                 <Paper className={classes.paper} elevation={3}>
                   <Grid container spacing={3}>
-                    <Grid item xs={6}>
+                    <Grid item xs={12}>
                       <Typography variant="h6">{project.title}</Typography>
                     </Grid>
-                    <Grid item xs={6}>
-                      <Typography variant="body2" align="right">
-                        {moment(project.deadline).format("YYYY/MM/DD hh:mm:ss")}
-                      </Typography>
-                    </Grid>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography variant="body2">
+                      Deadline:{" "}
+                      {moment(project.deadline).format("YYYY/MM/DD hh:mm:ss")}
+                    </Typography>
                   </Grid>
                   <Grid
                     container
@@ -97,6 +104,7 @@ const Projects = (props) => {
                         <Person />
                       </Badge>
                     </Grid>
+
                     <Grid item>
                       <Badge
                         badgeContent={project.tasks || 0}
@@ -106,12 +114,22 @@ const Projects = (props) => {
                         <Assignment />
                       </Badge>
                     </Grid>
-                    <Grid item className={classes.button}>
-                      <Link to={`/${project.id}`}>
-                        <Button variant="outlined" color="primary">
-                          go to project
-                        </Button>
-                      </Link>
+
+                    <Grid item className={classes.buttons}>
+                      {Array.isArray(project.roles) &&
+                        project.roles.map((role) => {
+                          return (
+                            <Link to={`/${project.id}?role=${role}`} key={role}>
+                              <Button
+                                variant="outlined"
+                                color="primary"
+                                className={classes.button}
+                              >
+                                Enter as {role}
+                              </Button>
+                            </Link>
+                          );
+                        })}
                     </Grid>
                   </Grid>
                 </Paper>
@@ -141,10 +159,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    get_all_projects: ({ page, limit, search }, enqueueSnackbar) =>
-      dispatch(
-        creators.get_all_projects({ page, limit, search }, enqueueSnackbar)
-      ),
+    get_all_projects: ({ page, limit }, enqueueSnackbar) =>
+      dispatch(creators.get_all_projects({ page, limit }, enqueueSnackbar)),
   };
 };
 

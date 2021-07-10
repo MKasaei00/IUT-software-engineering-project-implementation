@@ -59,7 +59,7 @@ const Tasks = (props) => {
 
   const getTasks = async (page = 1) => {
     const total = await props.get_all_tasks(
-      { page, limit, project_id: props.projectId },
+      { page, limit, project_id: props.projectId, role: props.role },
       enqueueSnackbar
     );
     const count = Math.ceil(total / limit);
@@ -90,7 +90,7 @@ const Tasks = (props) => {
             {Array.isArray(props.tasks) &&
               props.tasks.map((task) => {
                 return (
-                  <Grid item xs={12} lg={3} md={4} sm={6}>
+                  <Grid item xs={12} lg={3} md={4} sm={6} key={task.id}>
                     <Card className={classes.root}>
                       <CardContent>
                         <Typography
@@ -157,10 +157,10 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    get_all_tasks: ({ project_id, page, limit, search }, enqueueSnackbar) =>
+    get_all_tasks: ({ project_id, role, page, limit }, enqueueSnackbar) =>
       dispatch(
         creators.get_all_tasks(
-          { page, limit, search, project_id },
+          { page, limit, project_id, role },
           enqueueSnackbar
         )
       ),

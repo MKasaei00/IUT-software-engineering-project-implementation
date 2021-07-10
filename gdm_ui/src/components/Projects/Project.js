@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import React, { useEffect } from "react";
+import { useParams, useLocation } from "react-router";
 import { connect } from "react-redux";
 import { useSnackbar } from "notistack";
 
@@ -8,7 +8,13 @@ import Tasks from "../Tasks/Tasks";
 import * as creators from "../../store/actions/index";
 
 const Project = (props) => {
+  const useQuery = () => {
+    return new URLSearchParams(useLocation().search);
+  };
+
   const { id } = useParams();
+  const query = useQuery();
+
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
     props.get_project({ project_id: id }, enqueueSnackbar);
@@ -16,7 +22,7 @@ const Project = (props) => {
 
   return (
     <div>
-      <Tasks projectId={id} />
+      <Tasks projectId={id} role={query.get("role")} />
     </div>
   );
 };

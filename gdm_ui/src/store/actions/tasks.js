@@ -4,7 +4,7 @@ import catchError from "../../hoc/catchError";
 import { tasks, projects } from "../../axios/main";
 
 export const get_all_tasks = (
-  { project_id, page, limit, search },
+  { project_id, role, page, limit },
   enqueueSnackbar
 ) => {
   return catchError(async (dispatch) => {
@@ -12,7 +12,7 @@ export const get_all_tasks = (
       params: {
         page,
         limit,
-        search,
+        role,
       },
     });
     dispatch({ type: types.set_tasks, tasks: data });
