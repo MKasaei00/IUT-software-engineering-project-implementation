@@ -4,7 +4,7 @@ from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.serializers import Serializer
-from .serializers import ProjectSerializer, TaskSerializer, TeamSerializer
+from .serializers import ProjectSerializer, TaskSerializer, TeamSerializer, NormalUserSerializer
 from .models import Deadline, NormalUser, Project, ProjectManager, Task, Team, TeamManager, TeamMember
 from gdm_app import serializers
 from django.http import Http404
@@ -199,3 +199,21 @@ class ProjectView(viewsets.ViewSet):
 
         return Response(TeamSerializer(Team.objects.filter(project__exact=pk),many=True).data)
          
+
+    @action(detail=True)
+    def members(self,request,pk=None):
+        queryset = set()
+        if Project.objects.filter(id__exact=pk).count() != 0 and ProjectManager.objects.filter(base_user__exact=self.request.user).filter(project__exact=pk).count() != 0 :
+            queryset.add(self.request.user)
+        else:
+            raise Http404
+        
+        for e in TeamManager.objects.all():
+            if e.team.project.id == int(pk):
+                queryset.add(e.base_user)
+        
+        for e in TeamMember.objects.all():
+            if e.team.project.id == int(pk):
+                queryset.add(e.base_user)
+
+        return Response(NormalUserSerializer(queryset,many=True).data)
