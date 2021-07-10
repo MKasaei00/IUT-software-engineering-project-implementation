@@ -17,7 +17,6 @@ class Deadline(models.Model):
     name = models.CharField(max_length=50)
     start_date = models.DateTimeField('start date')
     end_date = models.DateTimeField('end date')
-    tasks = models.ManyToManyField('Task')
     project = models.ForeignKey('Project',on_delete=models.CASCADE,related_name='project')
     status_choices = [
         ('C','Completed'),
@@ -42,6 +41,7 @@ class Task(models.Model):
     assigned_to = models.ForeignKey('NormalUser',on_delete=models.SET_NULL,null=True,related_name='assigned_to',blank=True)
     assigned_to_team = models.ForeignKey('Team',on_delete=models.SET_NULL,null=True,blank=True)
     project = models.ForeignKey('Project',on_delete=models.CASCADE)
+    deadlines = models.ManyToManyField('Deadline')
     status_choices = [
         ('NC','Not Completed'),
         ('CP','Check Pending'),
@@ -56,7 +56,6 @@ class Task(models.Model):
 
 class Team(models.Model):
     name = models.CharField(max_length=50)
-    manager = models.ForeignKey('TeamManager',on_delete=models.SET_NULL,null=True,related_name='manager',blank=True)
     project = models.ForeignKey('Project',on_delete=models.CASCADE)
 
 class TeamMember(models.Model):

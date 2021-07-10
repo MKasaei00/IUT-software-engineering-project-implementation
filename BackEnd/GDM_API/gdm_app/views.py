@@ -40,7 +40,7 @@ class TaskView(viewsets.ViewSet):
         if ProjectManager.objects.filter(project__exact=task.project).count() != 0 and ProjectManager.objects.filter(project__exact=task.project).first().base_user == self.request.user:
             return Response(TaskSerializer(task).data)
         if task.assigned_to_team is not None:
-            if task.assigned_to_team.manager.base_user == self.request.user:
+            if TeamManager.objects.filter(team__exact=task.assigned_to_team).count() != 0 and  TeamManager.objects.filter(team__exact=task.assigned_to_team).first().base_user == self.request.user:
                 return Response(TaskSerializer(task).data)
             else:
                 if task.assigned_to == self.request.user:
