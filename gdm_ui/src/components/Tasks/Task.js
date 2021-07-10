@@ -20,6 +20,7 @@ import { connect } from "react-redux";
 
 import * as creators from "../../store/actions/index";
 import Picker from "../DatePicker/DatePicker";
+import roles from "../../defaults/roles.json";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -50,6 +51,7 @@ const Task = ({
   create_task,
   update_task,
   delete_task,
+  isNew,
 }) => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
@@ -91,6 +93,14 @@ const Task = ({
   };
 
   const saveTask = async () => {
+    if (role === roles.team_member) {
+      set_assigned_to(me.id);
+    }
+
+    if (role === roles.team_manager) {
+      set_assigned_to_team(Array.isArray(teams) && teams[0] && teams[0].id);
+    }
+
     const res = await update_task(
       {
         task_id: task && task.id,
@@ -110,6 +120,14 @@ const Task = ({
   };
 
   const createTask = async () => {
+    if (role === roles.team_member) {
+      set_assigned_to(me.id);
+    }
+
+    if (role === roles.team_manager) {
+      set_assigned_to_team(Array.isArray(teams) && teams[0] && teams[0].id);
+    }
+
     const res = await create_task(
       {
         project_id: projectId,
@@ -147,29 +165,9 @@ const Task = ({
     }
   }
 
-  return (
-    <Dialog
-      open={open}
-      onClose={handleClose}
-      maxWidth="sm"
-      TransitionComponent={Transition}
-    >
-      <AppBar className={classes.appBar}>
-        <Toolbar>
-          <IconButton
-            edge="start"
-            color="inherit"
-            onClick={handleClose}
-            aria-label="close"
-          >
-            <Close />
-          </IconButton>
-          <Typography variant="h6" className={classes.title}>
-            {task ? task.title : "New Task"}
-          </Typography>
-          {buttons}
-        </Toolbar>
-      </AppBar>
+  let fields;
+  if (role === roles.project_manager) {
+    fields = (
       <DialogContent>
         <TextField
           autoFocus
@@ -237,6 +235,104 @@ const Task = ({
           </Select>
         </FormControl>
       </DialogContent>
+    );
+  } else if (role === roles.team_manager) {
+    fields = (
+      <DialogContent>
+        <TextField
+          autoFocus
+          margin="dense"
+          name="title"
+          label="Title"
+          type="text"
+          variant="outlined"
+          fullWidth
+          value={title}
+          onChange={handleField}
+        />
+        <Picker
+          name="deadline"
+          label="Deadline"
+          variant="outlined"
+          fullWidth
+          value={deadline}
+          onChange={handleField}
+        />
+        <FormControl
+          className={classes.formControl}
+          variant="outlined"
+          fullWidth
+        >
+          <InputLabel id="member">Member</InputLabel>
+          <Select
+            labelId="member"
+            name="assigned_to"
+            label="Member"
+            value={assigned_to}
+            onChange={handleField}
+          >
+            {Array.isArray(members) &&
+              members.map((member) => {
+                return (
+                  <MenuItem value={member.id} key={member.id}>
+                    {`${member.first_name} ${member.last_name}`}
+                  </MenuItem>
+                );
+              })}
+          </Select>
+        </FormControl>
+      </DialogContent>
+    );
+  } else if (role === roles.team_member) {
+    fields = (
+      <DialogContent>
+        <TextField
+          autoFocus
+          margin="dense"
+          name="title"
+          label="Title"
+          type="text"
+          variant="outlined"
+          fullWidth
+          value={title}
+          onChange={handleField}
+        />
+        <Picker
+          name="deadline"
+          label="Deadline"
+          variant="outlined"
+          fullWidth
+          value={deadline}
+          onChange={handleField}
+        />
+      </DialogContent>
+    );
+  }
+
+  return (
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      maxWidth="sm"
+      TransitionComponent={Transition}
+    >
+      <AppBar className={classes.appBar}>
+        <Toolbar>
+          <IconButton
+            edge="start"
+            color="inherit"
+            onClick={handleClose}
+            aria-label="close"
+          >
+            <Close />
+          </IconButton>
+          <Typography variant="h6" className={classes.title}>
+            {isNew ? "New Task" : task && task.title}
+          </Typography>
+          {buttons}
+        </Toolbar>
+      </AppBar>
+      {fields}
     </Dialog>
   );
 };
