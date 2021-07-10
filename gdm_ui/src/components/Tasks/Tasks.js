@@ -10,7 +10,7 @@ import {
   CardContent,
 } from "@material-ui/core";
 import Pagination from "@material-ui/lab/Pagination";
-import { Delete, Close, Check } from "@material-ui/icons";
+import { Delete, Close, Check, MoreVert } from "@material-ui/icons";
 import { red, green, yellow } from "@material-ui/core/colors";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
@@ -87,7 +87,7 @@ const Tasks = (props) => {
             {Array.isArray(props.tasks) &&
               props.tasks.map((task) => {
                 return (
-                  <Grid item xs={12} lg={4}>
+                  <Grid item xs={12} lg={3} md={4} sm={6}>
                     <Card className={classes.root}>
                       <CardContent>
                         <Typography
@@ -120,6 +120,9 @@ const Tasks = (props) => {
                           className={classes.green}
                         >
                           <Check />
+                        </IconButton>
+                        <IconButton aria-label="check">
+                          <MoreVert />
                         </IconButton>
                       </CardActions>
                     </Card>
