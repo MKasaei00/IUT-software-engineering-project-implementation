@@ -18,10 +18,3 @@ export const projects = axios.create({
   baseURL: `${api_url}/api/projects`,
   withCredentials: true,
 });
-
-auth.defaults.xsrfCookieName = "csrftoken";
-auth.defaults.xsrfHeaderName = "X-CSRFToken";
-tasks.defaults.xsrfCookieName = "csrftoken";
-tasks.defaults.xsrfHeaderName = "X-CSRFToken";
-projects.defaults.xsrfCookieName = "csrftoken";
-projects.defaults.xsrfHeaderName = "X-CSRFToken";
