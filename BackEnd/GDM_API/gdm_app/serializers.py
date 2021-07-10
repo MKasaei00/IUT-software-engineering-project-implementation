@@ -1,5 +1,23 @@
+from django.db.models import fields
 from rest_framework import serializers
 from .models import Deadline, Project, ProjectManager,Team,Task, TeamManager, TeamMember
+
+
+
+class TaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Task
+        fields = '__all__'
+
+
+
+
+
+
+
+
+
+
 
 class ProjectSerializer(serializers.ModelSerializer):
     members = serializers.SerializerMethodField(method_name='num_members')

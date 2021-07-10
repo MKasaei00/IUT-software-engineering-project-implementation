@@ -1,12 +1,48 @@
+from django.contrib.auth import base_user
+from django.db.models.base import Model
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.response import Response
-from .serializers import ProjectSerializer
-from .models import Project, ProjectManager, TeamManager, TeamMember
+from rest_framework.serializers import Serializer
+from .serializers import ProjectSerializer, TaskSerializer
+from .models import Project, ProjectManager, Task, TeamManager, TeamMember
 from gdm_app import serializers
 from django.http import Http404
+from django.db.models import Q
 
 # Create your views here.
+
+
+
+class TaskView(viewsets.ViewSet):
+    def list(self,request,project_pk=None):
+        queryset = set()
+        if request.GET['role'] == 'Project Manager':
+            prjs = ProjectManager.objects.filter(base_user__exact=self.request.user)
+            if prjs.count() != 0 and prjs.filter(id__exact=project_pk).count() != 0:
+                queryset = Task.objects.filter(project__exact=project_pk)
+        elif request.GET['role'] == 'Team Manager':
+            team = TeamManager.objects.filter(base_user__exact=self.request.user).first().team
+            queryset = Task.objects.filter(Q(assigned_to_team__exact=team)|Q(assigned_to__exact=self.request.user))
+        else:
+            queryset = Task.objects.filter(assigned_to__exact=self.request.user)
+        
+        serializer = TaskSerializer(queryset,many=True)
+        return Response(serializer.data)
+
+
+    def retrieve(self, request,pk=None,project_pk=None):
+        return Response("fuck")
+
+
+
+
+
+
+
+
+
+
 
 class ProjectView(viewsets.ViewSet):
 
@@ -28,9 +64,9 @@ class ProjectView(viewsets.ViewSet):
             queryset.add(e.team.project)
             team_name = e.team.name
             if e.team.project.id in context:
-                context[e.team.project.id] += ["Team Manager"+":"+team_name]
+                context[e.team.project.id] += ["Team Manager"]
             else:
-                context[e.team.project.id] = ["Team Manager"+":"+team_name]
+                context[e.team.project.id] = ["Team Manager"]
 
 
 
@@ -38,9 +74,9 @@ class ProjectView(viewsets.ViewSet):
             queryset.add(e.team.project)
             team_name = e.team.name
             if e.team.project.id in context:
-                context[e.team.project.id] += ["Team Member"+":"+team_name]
+                context[e.team.project.id] += ["Team Member"]
             else:
-                context[e.team.project.id] = ["Team Member"+":"+team_name]
+                context[e.team.project.id] = ["Team Member"]
 
 
         serializer = ProjectSerializer(queryset,context=context,many=True)
@@ -65,9 +101,9 @@ class ProjectView(viewsets.ViewSet):
                 queryset.add(e.team.project)
                 team_name = e.team.name
                 if e.team.project.id in context:
-                    context[e.team.project.id] += ["Team Manager"+":"+team_name]
+                    context[e.team.project.id] += ["Team Manager"]
                 else:
-                    context[e.team.project.id] = ["Team Manager"+":"+team_name]
+                    context[e.team.project.id] = ["Team Manager"]
 
 
 
@@ -76,9 +112,9 @@ class ProjectView(viewsets.ViewSet):
                 queryset.add(e.team.project)
                 team_name = e.team.name
                 if e.team.project.id in context:
-                    context[e.team.project.id] += ["Team Member"+":"+team_name]
+                    context[e.team.project.id] += ["Team Member"]
                 else:
-                    context[e.team.project.id] = ["Team Member"+":"+team_name]
+                    context[e.team.project.id] = ["Team Member"]
 
         if len(queryset) == 0:
             raise Http404
