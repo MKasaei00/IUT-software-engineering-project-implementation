@@ -24,6 +24,6 @@ export const get_all_tasks = (
 export const get_task = ({ task_id }, enqueueSnackbar) => {
   return catchError(async (dispatch) => {
     const { data } = await tasks.get(`/${task_id}/`);
-    dispatch({ type: types.set_task, task: data[0] });
+    dispatch({ type: types.set_task, task: data });
   }, enqueueSnackbar);
 };

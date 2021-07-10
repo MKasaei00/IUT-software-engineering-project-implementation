@@ -20,6 +20,6 @@ export const get_all_projects = ({ page, limit }, enqueueSnackbar) => {
 export const get_project = ({ project_id }, enqueueSnackbar) => {
   return catchError(async (dispatch) => {
     const { data } = await projects.get(`/${project_id}/`);
-    dispatch({ type: types.set_project, project: data[0] });
+    dispatch({ type: types.set_project, project: data });
   }, enqueueSnackbar);
 };
