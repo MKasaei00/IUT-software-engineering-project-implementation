@@ -4,13 +4,14 @@ from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.serializers import Serializer
-from .serializers import ProjectSerializer, TaskSerializer
+from .serializers import ProjectSerializer, TaskSerializer, TeamSerializer
 from .models import Deadline, NormalUser, Project, ProjectManager, Task, Team, TeamManager, TeamMember
 from gdm_app import serializers
 from django.http import Http404
 from django.db.models import Q, query
 import datetime,time,calendar
 from django.db import transaction
+from rest_framework.decorators import action
 
 # Create your views here.
 
@@ -189,3 +190,12 @@ class ProjectView(viewsets.ViewSet):
         serializer = ProjectSerializer(next(iter(queryset)),context=context)
         return Response(serializer.data)
     
+    @action(detail=True)
+    def teams(self,request,pk=None):
+        if Project.objects.filter(id__exact=pk).count() != 0 and ProjectManager.objects.filter(base_user__exact=self.request.user).filter(project__exact=pk).count() != 0 :
+            pass
+        else:
+            raise Http404
+
+        return Response(TeamSerializer(Team.objects.filter(project__exact=pk),many=True).data)
+         

@@ -1,14 +1,13 @@
 from django.db.models import fields
 from rest_framework import serializers
 from .models import Deadline, NormalUser, Project, ProjectManager,Team,Task, TeamManager, TeamMember
-"""
+
 class TeamSerializer(serializers.ModelSerializer):
     class Meta:
         model = Team
-        fields = '__all__'
+        exclude = ['project']
 
 
-"""
 class NormalUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = NormalUser
