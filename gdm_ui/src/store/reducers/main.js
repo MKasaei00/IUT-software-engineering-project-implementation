@@ -6,6 +6,8 @@ const initState = {
   project: null,
   tasks: [],
   task: null,
+  teams: [],
+  members: [],
 };
 
 const reducer = (state = initState, action) => {
@@ -20,6 +22,10 @@ const reducer = (state = initState, action) => {
       return { ...state, tasks: action.tasks };
     case types.set_task:
       return { ...state, task: action.task };
+    case types.set_teams:
+      return { ...state, teams: action.teams };
+    case types.set_members:
+      return { ...state, members: action.members };
     default:
       return state;
   }

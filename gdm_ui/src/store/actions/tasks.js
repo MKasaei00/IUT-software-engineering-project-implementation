@@ -27,3 +27,54 @@ export const get_task = ({ task_id }, enqueueSnackbar) => {
     dispatch({ type: types.set_task, task: data });
   }, enqueueSnackbar);
 };
+
+export const create_task = (
+  { project_id, title, deadline, assigned_to, assigned_to_team },
+  enqueueSnackbar
+) => {
+  return catchError(async () => {
+    const { data } = await projects.post(`/${project_id}/tasks/`, {
+      title,
+      deadline,
+      assigned_to,
+      assigned_to_team,
+    });
+    return data;
+  }, enqueueSnackbar);
+};
+
+export const update_task = (
+  { task_id, title, deadline, assigned_to, assigned_to_team },
+  enqueueSnackbar
+) => {
+  return catchError(async () => {
+    const { data } = await tasks.patch(`/${task_id}/`, {
+      title,
+      deadline,
+      assigned_to,
+      assigned_to_team,
+    });
+    return data;
+  }, enqueueSnackbar);
+};
+
+export const delete_task = ({ task_id }, enqueueSnackbar) => {
+  return catchError(async () => {
+    const { data } = await tasks.delete(`/${task_id}/`);
+    return data;
+  }, enqueueSnackbar);
+};
+
+export const complete_task = ({ task_id }, enqueueSnackbar) => {
+  return catchError(async () => {
+    const { data } = await tasks.post(`/${task_id}/completed`);
+    return data;
+  }, enqueueSnackbar);
+};
+
+export const cancel_task = ({ task_id }, enqueueSnackbar) => {
+  return catchError(async () => {
+    const { data } = await tasks.post(`/${task_id}/canceled`);
+    return data;
+  }, enqueueSnackbar);
+};

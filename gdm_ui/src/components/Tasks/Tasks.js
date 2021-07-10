@@ -12,11 +12,12 @@ import {
 import Pagination from "@material-ui/lab/Pagination";
 import { Delete, Close, Check, MoreVert } from "@material-ui/icons";
 import { red, green, yellow } from "@material-ui/core/colors";
-import { Link } from "react-router-dom";
 import { useSnackbar } from "notistack";
 import { connect } from "react-redux";
 
 import Timer from "../Timer/Timer";
+import Task from "./Task";
+import task_status from "../../defaults/task.json";
 
 import * as creators from "../../store/actions/index";
 
@@ -38,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
     color: green[500],
   },
   yellow: {
-    color: yellow[500],
+    color: yellow[900],
   },
   buttons: {
     display: "flex",
@@ -54,6 +55,7 @@ const Tasks = (props) => {
 
   const [page, setPage] = useState(0);
   const [count, setCount] = useState(0);
+  const [open, setOpen] = useState(false);
 
   const limit = 10;
 
@@ -76,6 +78,14 @@ const Tasks = (props) => {
     getTasks();
   }, []);
 
+  const viewTask = async (task_id) => {
+    const res = await props.get_task({ task_id }, enqueueSnackbar);
+    if (res !== false) setOpen(true);
+  };
+  const deleteTask = () => {};
+  const cancelTask = () => {};
+  const completeTask = () => {};
+
   return (
     <Container className={classes.root} maxWidth="md">
       <Grid
@@ -95,36 +105,52 @@ const Tasks = (props) => {
                       <CardContent>
                         <Typography
                           className={classes.title}
-                          color="textSecondary"
+                          variant="h6"
                           gutterBottom
                         >
                           {task.title}
                         </Typography>
-                        <Timer deadline={task.deadline} />
+                        <Timer
+                          deadline={
+                            Array.isArray(task.deadlines) &&
+                            task.deadlines[0] &&
+                            task.deadlines[0].end_date
+                          }
+                        />
                         <Typography
                           className={classes.pos}
                           color="textSecondary"
+                          align="center"
                         >
-                          {task.status}
+                          {task_status[task.completion_status]}
                         </Typography>
                       </CardContent>
                       <CardActions className={classes.buttons}>
-                        <IconButton aria-label="delete" className={classes.red}>
+                        <IconButton
+                          aria-label="delete"
+                          className={classes.red}
+                          onClick={deleteTask}
+                        >
                           <Delete />
                         </IconButton>
                         <IconButton
                           aria-label="close"
                           className={classes.yellow}
+                          onClick={cancelTask}
                         >
                           <Close />
                         </IconButton>
                         <IconButton
                           aria-label="check"
                           className={classes.green}
+                          onClick={completeTask}
                         >
                           <Check />
                         </IconButton>
-                        <IconButton aria-label="check">
+                        <IconButton
+                          aria-label="view"
+                          onClick={viewTask.bind(null, task.id)}
+                        >
                           <MoreVert />
                         </IconButton>
                       </CardActions>
@@ -145,6 +171,12 @@ const Tasks = (props) => {
           )}
         </Grid>
       </Grid>
+      <Task
+        open={open}
+        setOpen={setOpen}
+        projectId={props.projectId}
+        role={props.role}
+      />
     </Container>
   );
 };
@@ -164,6 +196,8 @@ const mapDispatchToProps = (dispatch) => {
           enqueueSnackbar
         )
       ),
+    get_task: ({ task_id }, enqueueSnackbar) =>
+      dispatch(creators.get_task({ task_id }, enqueueSnackbar)),
   };
 };
 
