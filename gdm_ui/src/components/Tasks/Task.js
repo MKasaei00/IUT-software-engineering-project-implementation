@@ -13,7 +13,7 @@ import {
   Select,
   MenuItem,
 } from "@material-ui/core";
-import { Close, Save, Delete, AddBox } from "@material-ui/icons";
+import { Close, Save, AddBox } from "@material-ui/icons";
 import Slide from "@material-ui/core/Slide";
 import { useSnackbar } from "notistack";
 import { connect } from "react-redux";
@@ -50,7 +50,6 @@ const Task = ({
   teams,
   create_task,
   update_task,
-  delete_task,
   isNew,
 }) => {
   const classes = useStyles();
@@ -114,11 +113,6 @@ const Task = ({
     if (res !== false) handleClose();
   };
 
-  const deleteTask = async () => {
-    const res = await delete_task(task && task.id, enqueueSnackbar);
-    if (res !== false) handleClose();
-  };
-
   const createTask = async () => {
     if (role === roles.team_member) {
       set_assigned_to(me.id);
@@ -147,14 +141,9 @@ const Task = ({
   if (canChange) {
     if (task) {
       buttons = (
-        <>
-          <IconButton color="inherit" aria-label="save" onClick={saveTask}>
-            <Save />
-          </IconButton>
-          <IconButton color="inherit" aria-label="delete" onClick={deleteTask}>
-            <Delete />
-          </IconButton>
-        </>
+        <IconButton color="inherit" aria-label="save" onClick={saveTask}>
+          <Save />
+        </IconButton>
       );
     } else {
       buttons = (
@@ -368,8 +357,6 @@ const mapDispatchToProps = (dispatch) => {
           enqueueSnackbar
         )
       ),
-    delete_task: (task_id, enqueueSnackbar) =>
-      dispatch(creators.delete_task({ task_id }, enqueueSnackbar)),
   };
 };
 

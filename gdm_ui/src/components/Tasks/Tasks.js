@@ -10,7 +10,7 @@ import {
   CardContent,
 } from "@material-ui/core";
 import Pagination from "@material-ui/lab/Pagination";
-import { Delete, Close, Check, MoreVert } from "@material-ui/icons";
+import { Close, Check, MoreVert } from "@material-ui/icons";
 import { red, green, yellow } from "@material-ui/core/colors";
 import { useSnackbar } from "notistack";
 import { connect } from "react-redux";
@@ -79,13 +79,15 @@ const Tasks = (props) => {
   }, []);
 
   const viewTask = async (task_id) => {
-    const res = await props.get_task({ task_id }, enqueueSnackbar);
+    const res = await props.get_task(task_id, enqueueSnackbar);
     if (res !== false) setOpen(true);
   };
-  const deleteTask = () => {};
-  const cancelTask = () => {};
-  const completeTask = () => {};
-
+  const cancelTask = (task_id) => {
+    props.cancel_task(task_id, enqueueSnackbar);
+  };
+  const completeTask = (task_id) => {
+    props.complete_task(task_id, enqueueSnackbar);
+  };
   return (
     <Container className={classes.root} maxWidth="md">
       <Grid
@@ -117,33 +119,19 @@ const Tasks = (props) => {
                             task.deadlines[0].end_date
                           }
                         />
-                        <Typography
-                          className={classes.pos}
-                          color="textSecondary"
-                          align="center"
-                        >
-                          {task_status[task.completion_status]}
-                        </Typography>
                       </CardContent>
                       <CardActions className={classes.buttons}>
                         <IconButton
-                          aria-label="delete"
-                          className={classes.red}
-                          onClick={deleteTask}
-                        >
-                          <Delete />
-                        </IconButton>
-                        <IconButton
                           aria-label="close"
                           className={classes.yellow}
-                          onClick={cancelTask}
+                          onClick={cancelTask.bind(null, task.id)}
                         >
                           <Close />
                         </IconButton>
                         <IconButton
                           aria-label="check"
                           className={classes.green}
-                          onClick={completeTask}
+                          onClick={completeTask.bind(null, task.id)}
                         >
                           <Check />
                         </IconButton>
@@ -196,8 +184,12 @@ const mapDispatchToProps = (dispatch) => {
           enqueueSnackbar
         )
       ),
-    get_task: ({ task_id }, enqueueSnackbar) =>
+    get_task: (task_id, enqueueSnackbar) =>
       dispatch(creators.get_task({ task_id }, enqueueSnackbar)),
+    complete_task: (task_id, enqueueSnackbar) =>
+      dispatch(creators.complete_task({ task_id }, enqueueSnackbar)),
+    cancel_task: (task_id, enqueueSnackbar) =>
+      dispatch(creators.cancel_task({ task_id }, enqueueSnackbar)),
   };
 };
 

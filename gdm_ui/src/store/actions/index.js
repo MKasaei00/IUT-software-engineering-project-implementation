@@ -6,7 +6,6 @@ export {
   get_all_tasks,
   get_task,
   create_task,
-  delete_task,
   update_task,
   cancel_task,
   complete_task,

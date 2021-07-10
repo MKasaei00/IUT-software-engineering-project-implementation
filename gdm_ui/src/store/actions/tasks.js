@@ -58,13 +58,6 @@ export const update_task = (
   }, enqueueSnackbar);
 };
 
-export const delete_task = ({ task_id }, enqueueSnackbar) => {
-  return catchError(async () => {
-    const { data } = await tasks.delete(`/${task_id}/`);
-    return data;
-  }, enqueueSnackbar);
-};
-
 export const complete_task = ({ task_id }, enqueueSnackbar) => {
   return catchError(async () => {
     const { data } = await tasks.post(`/${task_id}/completed`);
