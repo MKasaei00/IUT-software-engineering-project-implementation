@@ -32,7 +32,27 @@ class TaskView(viewsets.ViewSet):
 
 
     def retrieve(self, request,pk=None,project_pk=None):
-        return Response("fuck")
+        if Task.objects.filter(id__exact=pk).count() == 0:
+            raise Http404
+
+        task = Task.objects.filter(id__exact=pk).first()
+
+        if ProjectManager.objects.filter(project__exact=task.project).count() != 0 and ProjectManager.objects.filter(project__exact=task.project).first().base_user == self.request.user:
+            return Response(TaskSerializer(task).data)
+        if task.assigned_to_team is not None:
+            if task.assigned_to_team.manager.base_user == self.request.user:
+                return Response(TaskSerializer(task).data)
+            else:
+                if task.assigned_to == self.request.user:
+                    return Response(TaskSerializer(task).data)
+                else:
+                    raise Http404
+        else:
+            if task.assigned_to == self.request.user:
+                return Response(TaskSerializer(task).data)
+            else:
+                raise Http404
+
 
 
 
