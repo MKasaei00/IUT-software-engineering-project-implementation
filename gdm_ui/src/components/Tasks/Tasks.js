@@ -1,20 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
-  Paper,
   Grid,
   Container,
   Typography,
-  Badge,
-  Button,
+  IconButton,
   Card,
   CardActions,
   CardContent,
 } from "@material-ui/core";
 import Pagination from "@material-ui/lab/Pagination";
-import { Person, Assignment } from "@material-ui/icons";
+import { Delete, Close, Check } from "@material-ui/icons";
+import { red, green, yellow } from "@material-ui/core/colors";
 import { Link } from "react-router-dom";
-import moment from "moment";
 import { connect } from "react-redux";
 
 import Timer from "../Timer/Timer";
@@ -31,6 +29,20 @@ const useStyles = makeStyles((theme) => ({
   button: {
     flexGrow: 1,
     textAlign: "right",
+  },
+  red: {
+    color: red[500],
+  },
+  green: {
+    color: green[500],
+  },
+  yellow: {
+    color: yellow[500],
+  },
+  buttons: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
 }));
 
@@ -70,12 +82,12 @@ const Tasks = (props) => {
         alignItems="center"
         justifyContent="center"
       >
-        <Grid item>
+        <Grid item style={{ width: "100%" }}>
           <Grid container spacing={3}>
             {Array.isArray(props.tasks) &&
               props.tasks.map((task) => {
                 return (
-                  <Grid item>
+                  <Grid item xs={12} lg={4}>
                     <Card className={classes.root}>
                       <CardContent>
                         <Typography
@@ -90,16 +102,25 @@ const Tasks = (props) => {
                           className={classes.pos}
                           color="textSecondary"
                         >
-                          adjective
-                        </Typography>
-                        <Typography variant="body2" component="p">
-                          well meaning and kindly.
-                          <br />
-                          {'"a benevolent smile"'}
+                          {task.status}
                         </Typography>
                       </CardContent>
-                      <CardActions>
-                        <Button size="small">Learn More</Button>
+                      <CardActions className={classes.buttons}>
+                        <IconButton aria-label="delete" className={classes.red}>
+                          <Delete />
+                        </IconButton>
+                        <IconButton
+                          aria-label="close"
+                          className={classes.yellow}
+                        >
+                          <Close />
+                        </IconButton>
+                        <IconButton
+                          aria-label="check"
+                          className={classes.green}
+                        >
+                          <Check />
+                        </IconButton>
                       </CardActions>
                     </Card>
                   </Grid>

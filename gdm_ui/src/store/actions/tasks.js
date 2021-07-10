@@ -12,7 +12,7 @@ export const get_all_tasks = ({ project_id, page, limit, search }, err) => {
         search,
       },
     });
-    dispatch({ type: types.set_tasks, tasks: data.tasks });
+    dispatch({ type: types.set_tasks, tasks: data });
 
     return data.total;
   }, err);
@@ -21,6 +21,6 @@ export const get_all_tasks = ({ project_id, page, limit, search }, err) => {
 export const get_task = ({ task_id }, err) => {
   return catchError(async (dispatch) => {
     const { data } = await tasks.get(`/${task_id}/`);
-    dispatch({ type: types.set_task, task: data.task });
+    dispatch({ type: types.set_task, task: data[0] });
   }, err);
 };

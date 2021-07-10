@@ -1,38 +1,54 @@
 import React from "react";
 import { CountdownCircleTimer } from "react-countdown-circle-timer";
 import moment from "moment";
+import { Check } from "@material-ui/icons";
 
 import classes from "./style.module.css";
 
-const renderTime = ({ remainingTime }) => {
+const renderTime = (done, { remainingTime }) => {
   const names = ["Seconds", "Minutes", "Hours", "Days", "Months", "Years"];
+  const times = [60, 60, 24, 30, 12, 1];
   let index = 0;
   let time = remainingTime;
   for (; index < names.length; index++) {
-    if (time / 60 > 0) time /= 60;
+    const next = Math.floor(time / times[index]);
+    if (next > 0) time = next;
     else break;
   }
   return (
     <div className={classes.timeWrapper}>
-      <div key={time} className={classes.time}>
-        {time}
-      </div>
-      <div key={names[index]} className={classes.label}>
-        {names[index]}
-      </div>
+      {done ? (
+        <div key={time}>
+          <Check fontSize="inherit" />
+        </div>
+      ) : remainingTime > 0 ? (
+        <>
+          <div key={time}>{time}</div>
+          <div key={names[index]} className={classes.label}>
+            {names[index]}
+          </div>
+        </>
+      ) : (
+        <div key={time} className={classes.expire}>
+          Expired
+        </div>
+      )}
     </div>
   );
 };
 
-const Timer = ({ deadline }) => {
+const Timer = ({ deadline, done }) => {
+  const seconds = moment.duration(moment(deadline).diff(moment())).asSeconds();
+
   return (
     <div className={classes.timerWrapper}>
       <CountdownCircleTimer
-        isPlaying
-        duration={moment.duration(moment(deadline).diff(moment())).asSeconds()}
-        colors={[["#004777", 0.33], ["#F7B801", 0.33], ["#A30000"]]}
+        key={deadline}
+        isPlaying={!done}
+        duration={isNaN(seconds) ? 0 : Math.max(seconds, 0)}
+        colors={[["#66A103", 0.33], ["#F7B801", 0.33], ["#A30000"]]}
       >
-        {renderTime}
+        {renderTime.bind(this, done)}
       </CountdownCircleTimer>
     </div>
   );
