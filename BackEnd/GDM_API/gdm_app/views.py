@@ -105,6 +105,40 @@ class TaskView(viewsets.ViewSet):
         task.save()
         return Response(status=204)
 
+    @action(detail=True,methods=['post'])
+    def completed(self,request,pk=None):
+        if Task.objects.filter(id__exact=pk).count() == 0:
+            raise Http404
+        task = Task.objects.filter(id__exact=pk).first()
+        if task.creator == self.request.user:
+            task.completion_status = 'C'
+            task.save()
+            return Response(status=200)
+        if task.assigned_to_team is not None:
+            if TeamManager.objects.filter(team__exact=task.assigned_to_team).filter(base_user__exact=self.request.user):
+                task.completion_status = 'CP'
+                task.save()
+                return Response(status=200)
+        if task.assigned_to == self.request.user:
+            task.completion_status = 'CP'
+            task.save()
+            return Response(status=200)
+        
+        return Response(status=403)
+
+    @action(detail=True,methods=['post'])
+    def canceled(self,request,pk=None):
+        if Task.objects.filter(id__exact=pk).count() == 0:
+            raise Http404
+        task = Task.objects.filter(id__exact=pk).first()
+        if task.creator == self.request.user:
+            task.completion_status = 'F'
+            task.save()
+            return Response(status=200)
+            
+        return Response(status=403)
+
+
 
 
 
