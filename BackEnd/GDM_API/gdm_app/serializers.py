@@ -37,6 +37,7 @@ class TaskSerializer(serializers.ModelSerializer):
         return TeamSerializer(self.context["assigned_to_team"]).data
     """
     creator = NormalUserSerializer()
+    assigned_to = NormalUserSerializer()
     class Meta:
         exclude = ['project']
         model = Task

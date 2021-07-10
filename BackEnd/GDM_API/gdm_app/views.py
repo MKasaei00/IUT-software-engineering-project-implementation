@@ -10,6 +10,7 @@ from gdm_app import serializers
 from django.http import Http404
 from django.db.models import Q, query
 import datetime,time,calendar
+from django.db import transaction
 
 # Create your views here.
 
@@ -38,27 +39,22 @@ class TaskView(viewsets.ViewSet):
             raise Http404
 
         task = Task.objects.filter(id__exact=pk).first()
-        context = {"assigned_to":task.assigned_to,"assigned_to_team":task.assigned_to_team}
         if ProjectManager.objects.filter(project__exact=task.project).count() != 0 and ProjectManager.objects.filter(project__exact=task.project).first().base_user == self.request.user:
-            return Response(TaskSerializer(task,context=context).data)
+            return Response(TaskSerializer(task).data)
         if task.assigned_to_team is not None:
             if TeamManager.objects.filter(team__exact=task.assigned_to_team).count() != 0 and  TeamManager.objects.filter(team__exact=task.assigned_to_team).first().base_user == self.request.user:
-                return Response(TaskSerializer(task,context=context).data)
+                return Response(TaskSerializer(task).data)
             else:
-                if task.assigned_to == self.request.user:
-                    return Response(TaskSerializer(task,context=context).data)
-                else:
-                    raise Http404
+                raise Http404
         else:
             if task.assigned_to == self.request.user:
-                return Response(TaskSerializer(task,context=context).data)
+                return Response(TaskSerializer(task).data)
             else:
                 raise Http404
 
+    @transaction.atomic
     def create(self,request,project_pk=None):
         params = request.data
-        print(params)
-        pass
         deadline = Deadline(name=params["title"],
             start_date=datetime.datetime.now(),
                 end_date=params["deadline"],
@@ -68,12 +64,44 @@ class TaskView(viewsets.ViewSet):
                         creator=self.request.user,
                             assigned_to=NormalUser.objects.filter(id__exact=params["assigned_to"]).first() if params["assigned_to"] is not None else None,
                                 assigned_to_team=Team.objects.filter(id__exact=params["assigned_to_team"]).first() if params["assigned_to_team"] is not None else None,
-                                    project=Project.objects.filter(id__exact=project_pk).first())
+                                    project=Project.objects.filter(id__exact=project_pk).first(),deadlines=deadline)
         task.save()
         task.deadlines.add(deadline)
-        return Response({"status":"ok"})
+        return Response(status=201)
+   
+    @transaction.atomic
+    def partial_update(self,request,pk=None,project_pk=None):
+        if Task.objects.filter(id__exact=pk).count() == 0:
+            raise Http404
 
-
+        params = request.data
+        task = Task.objects.filter(id__exact=pk).first()
+        if ProjectManager.objects.filter(project__exact=task.project).count() != 0 and ProjectManager.objects.filter(project__exact=task.project).first().base_user == self.request.user:
+            pass
+        elif task.assigned_to_team is not None:
+            if TeamManager.objects.filter(team__exact=task.assigned_to_team).count() != 0 and  TeamManager.objects.filter(team__exact=task.assigned_to_team).first().base_user == self.request.user:
+                pass
+            else:
+                return Response(status=403)
+        else:
+            if task.assigned_to == self.request.user:
+                pass
+            else:
+                return Response(status=403)
+        task.title=params["title"]
+        task.assigned_to=NormalUser.objects.filter(id__exact=params["assigned_to"]).first() if params["assigned_to"] is not None else None
+        task.assigned_to_team=Team.objects.filter(id__exact=params["assigned_to_team"]).first() if params["assigned_to_team"] is not None else None
+        if task.deadlines.count() == 0 and params["deadline"] is not None:
+            deadline = Deadline(name=params["title"],
+            start_date=datetime.datetime.now(),
+                end_date=params["deadline"],
+                    project=Project.objects.filter(id__exact=task.project.id).first())
+            deadline.save()
+            task.deadlines.add(deadline)
+        else:
+            task.deadlines.first().end_date = params["deadline"]
+        task.save()
+        return Response(status=204)
 
 
 
