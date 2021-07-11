@@ -71,3 +71,10 @@ export const cancel_task = ({ task_id }, enqueueSnackbar) => {
     return data;
   }, enqueueSnackbar);
 };
+
+export const reject_task = ({ task_id }, enqueueSnackbar) => {
+  return catchError(async () => {
+    const { data } = await tasks.post(`/${task_id}/rejected/`);
+    return data;
+  }, enqueueSnackbar);
+};

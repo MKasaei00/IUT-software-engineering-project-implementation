@@ -14,4 +14,5 @@ export {
   update_task,
   cancel_task,
   complete_task,
+  reject_task,
 } from "./tasks";

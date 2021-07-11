@@ -8,6 +8,9 @@ import {
   Card,
   CardActions,
   CardContent,
+  Paper,
+  Tab,
+  Tabs,
 } from "@material-ui/core";
 import Pagination from "@material-ui/lab/Pagination";
 import { Close, Check, MoreVert, Add } from "@material-ui/icons";
@@ -54,6 +57,12 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(5),
     backgroundColor: green[500],
   },
+  nav: {
+    margin: "auto",
+    marginBottom: theme.spacing(1),
+    marginTop: theme.spacing(0.5),
+    width: "max-content",
+  },
 }));
 
 const Tasks = (props) => {
@@ -65,6 +74,9 @@ const Tasks = (props) => {
   const [count, setCount] = useState(0);
   const [open, setOpen] = useState(false);
   const [isNew, setIsNew] = useState(false);
+  const [status, setStatus] = useState(0);
+
+  const status_map = ["_", "CP", "NC", "C", "F"];
 
   const limit = 10;
 
@@ -81,6 +93,10 @@ const Tasks = (props) => {
     if (value < 1 || value > count || value === page) return;
     setPage(value);
     getTasks(value);
+  };
+
+  const changeStatus = (e, val) => {
+    setStatus(val);
   };
 
   const createNew = () => {
@@ -115,6 +131,21 @@ const Tasks = (props) => {
 
   return (
     <Container className={classes.root} maxWidth="md">
+      <Paper square className={classes.nav}>
+        <Tabs
+          indicatorColor="primary"
+          textColor="primary"
+          aria-label="disabled tabs example"
+          value={status}
+          onChange={changeStatus}
+        >
+          <Tab label="All" />
+          <Tab label="Check Pending" />
+          <Tab label="Not Completed" />
+          <Tab label="Completed" />
+          <Tab label="Failed" />
+        </Tabs>
+      </Paper>
       <Grid
         container
         spacing={3}
@@ -126,59 +157,69 @@ const Tasks = (props) => {
           <Grid container spacing={3}>
             {Array.isArray(props.tasks) &&
               props.tasks.map((task) => {
-                return (
-                  <Grid item xs={12} lg={3} md={4} sm={6} key={task.id}>
-                    <Card className={classes.root}>
-                      <CardContent>
-                        <Typography
-                          className={classes.title}
-                          variant="h6"
-                          gutterBottom
-                        >
-                          {task.title}
-                        </Typography>
-                        <Timer
-                          deadline={
-                            Array.isArray(task.deadlines) &&
-                            task.deadlines[0] &&
-                            task.deadlines[0].end_date
-                          }
-                          done={
-                            task.completion_status === task_status.completed
-                          }
-                          pending={
-                            task.completion_status === task_status.check_pending
-                          }
-                          failed={task.completion_status === task_status.failed}
-                        />
-                      </CardContent>
-                      <CardActions className={classes.buttons}>
-                        <IconButton
-                          aria-label="close"
-                          className={classes.yellow}
-                          onClick={cancelTask.bind(null, task.id)}
-                        >
-                          <Close />
-                        </IconButton>
-                        <IconButton
-                          aria-label="check"
-                          className={classes.green}
-                          onClick={completeTask.bind(null, task.id)}
-                        >
-                          <Check />
-                        </IconButton>
-                        {canCancel && (
-                          <IconButton
-                            aria-label="view"
-                            onClick={viewTask.bind(null, task.id)}
+                if (
+                  task.completion_status === status_map[status] ||
+                  status === 0
+                )
+                  return (
+                    <Grid item xs={12} lg={3} md={4} sm={6} key={task.id}>
+                      <Card className={classes.root}>
+                        <CardContent>
+                          <Typography
+                            className={classes.title}
+                            variant="h6"
+                            gutterBottom
                           >
-                            <MoreVert />
+                            {task.title}
+                          </Typography>
+                          <Timer
+                            deadline={
+                              Array.isArray(task.deadlines) &&
+                              task.deadlines[0] &&
+                              task.deadlines[0].end_date
+                            }
+                            done={
+                              task.completion_status === task_status.completed
+                            }
+                            pending={
+                              task.completion_status ===
+                              task_status.check_pending
+                            }
+                            failed={
+                              task.completion_status === task_status.failed
+                            }
+                          />
+                        </CardContent>
+                        <CardActions className={classes.buttons}>
+                          <IconButton
+                            aria-label="close"
+                            className={classes.yellow}
+                            onClick={cancelTask.bind(null, task.id)}
+                          >
+                            <Close />
                           </IconButton>
-                        )}
-                      </CardActions>
-                    </Card>
-                  </Grid>
-                );
+                          <IconButton
+                            aria-label="check"
+                            className={classes.green}
+                            onClick={completeTask.bind(null, task.id)}
+                          >
+                            <Check />
+                          </IconButton>
+                          {canCancel && (
+                            <IconButton
+                              aria-label="view"
+                              onClick={viewTask.bind(null, task.id)}
+                            >
+                              <MoreVert />
+                            </IconButton>
+                          )}
+                        </CardActions>
+                      </Card>
+                    </Grid>
+                  );
+                else {
+                  return null;
+                }
               })}
           </Grid>
         </Grid>
@@ -234,6 +275,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(creators.complete_task({ task_id }, enqueueSnackbar)),
     cancel_task: (task_id, enqueueSnackbar) =>
       dispatch(creators.cancel_task({ task_id }, enqueueSnackbar)),
+    reject_task: (task_id, enqueueSnackbar) =>
+      dispatch(creators.reject_task({ task_id }, enqueueSnackbar)),
   };
 };
 
