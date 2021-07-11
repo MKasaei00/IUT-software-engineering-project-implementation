@@ -21,6 +21,7 @@ import { connect } from "react-redux";
 import * as creators from "../../store/actions/index";
 import Picker from "../DatePicker/DatePicker";
 import roles from "../../defaults/roles.json";
+import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -122,7 +123,7 @@ const Task = ({
       {
         task_id: task && task.id,
         title,
-        deadline,
+        deadline: moment(deadline).toISOString(),
         assigned_to,
         assigned_to_team,
       },
@@ -144,7 +145,7 @@ const Task = ({
       {
         project_id: projectId,
         title,
-        deadline,
+        deadline: moment(deadline).toISOString(),
         assigned_to,
         assigned_to_team,
       },
