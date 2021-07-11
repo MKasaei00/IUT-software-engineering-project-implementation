@@ -79,13 +79,18 @@ const Task = ({
   };
 
   useEffect(() => {
-    set_title(task && task.title);
-    set_deadline(task && task.deadline);
-    set_assigned_to_team(
-      task && task.assigned_to_team && task.assigned_to_team.id
-    );
-    set_assigned_to(task && task.assigned_to && task.assigned_to.id);
-  }, [task]);
+    if (isNew) {
+      set_title("");
+      set_deadline("");
+      set_assigned_to_team("");
+      set_assigned_to("");
+    } else if (task) {
+      set_title(task.title);
+      set_deadline(task.deadline);
+      set_assigned_to_team(task.assigned_to_team && task.assigned_to_team.id);
+      set_assigned_to(task.assigned_to && task.assigned_to.id);
+    }
+  }, [task, isNew]);
 
   const handleClose = () => {
     setOpen?.(false);
@@ -152,6 +157,12 @@ const Task = ({
         </IconButton>
       );
     }
+  } else if (isNew) {
+    buttons = (
+      <IconButton color="inherit" aria-label="add" onClick={createTask}>
+        <AddBox />
+      </IconButton>
+    );
   }
 
   let fields;

@@ -10,7 +10,7 @@ import {
   CardContent,
 } from "@material-ui/core";
 import Pagination from "@material-ui/lab/Pagination";
-import { Close, Check, MoreVert } from "@material-ui/icons";
+import { Close, Check, MoreVert, Add } from "@material-ui/icons";
 import { red, green, yellow } from "@material-ui/core/colors";
 import { useSnackbar } from "notistack";
 import { connect } from "react-redux";
@@ -18,6 +18,7 @@ import { connect } from "react-redux";
 import Timer from "../Timer/Timer";
 import Task from "./Task";
 import task_status from "../../defaults/task.json";
+import roles from "../../defaults/roles.json";
 
 import * as creators from "../../store/actions/index";
 
@@ -46,6 +47,13 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "center",
   },
+  addBtn: {
+    position: "fixed",
+    bottom: 0,
+    right: 0,
+    margin: theme.spacing(5),
+    backgroundColor: green[500],
+  },
 }));
 
 const Tasks = (props) => {
@@ -56,6 +64,7 @@ const Tasks = (props) => {
   const [page, setPage] = useState(0);
   const [count, setCount] = useState(0);
   const [open, setOpen] = useState(false);
+  const [isNew, setIsNew] = useState(false);
 
   const limit = 10;
 
@@ -74,13 +83,21 @@ const Tasks = (props) => {
     getTasks(value);
   };
 
+  const createNew = () => {
+    setIsNew(true);
+    setOpen(true);
+  };
+
   useEffect(() => {
     getTasks();
   }, []);
 
   const viewTask = async (task_id) => {
     const res = await props.get_task(task_id, enqueueSnackbar);
-    if (res !== false) setOpen(true);
+    if (res !== false) {
+      setIsNew(false);
+      setOpen(true);
+    }
   };
   const cancelTask = (task_id) => {
     props.cancel_task(task_id, enqueueSnackbar);
@@ -88,6 +105,14 @@ const Tasks = (props) => {
   const completeTask = (task_id) => {
     props.complete_task(task_id, enqueueSnackbar);
   };
+
+  const canCancel = (task) => {
+    return (
+      (props.me && task && task.creator && task.creator.id === props.me.id) ||
+      props.role === roles.project_manager
+    );
+  };
+
   return (
     <Container className={classes.root} maxWidth="md">
       <Grid
@@ -118,6 +143,13 @@ const Tasks = (props) => {
                             task.deadlines[0] &&
                             task.deadlines[0].end_date
                           }
+                          done={
+                            task.completion_status === task_status.completed
+                          }
+                          pending={
+                            task.completion_status === task_status.check_pending
+                          }
+                          failed={task.completion_status === task_status.failed}
                         />
                       </CardContent>
                       <CardActions className={classes.buttons}>
@@ -135,12 +167,14 @@ const Tasks = (props) => {
                         >
                           <Check />
                         </IconButton>
-                        <IconButton
-                          aria-label="view"
-                          onClick={viewTask.bind(null, task.id)}
-                        >
-                          <MoreVert />
-                        </IconButton>
+                        {canCancel && (
+                          <IconButton
+                            aria-label="view"
+                            onClick={viewTask.bind(null, task.id)}
+                          >
+                            <MoreVert />
+                          </IconButton>
+                        )}
                       </CardActions>
                     </Card>
                   </Grid>
@@ -164,7 +198,16 @@ const Tasks = (props) => {
         setOpen={setOpen}
         projectId={props.projectId}
         role={props.role}
+        isNew={isNew}
       />
+      <IconButton
+        aria-label="add"
+        className={classes.addBtn}
+        onClick={createNew}
+        size="medium"
+      >
+        <Add />
+      </IconButton>
     </Container>
   );
 };
@@ -172,6 +215,7 @@ const Tasks = (props) => {
 const mapStateToProps = (state) => {
   return {
     tasks: state.tasks,
+    me: state.me,
   };
 };
 

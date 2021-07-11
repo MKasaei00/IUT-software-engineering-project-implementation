@@ -11,11 +11,3 @@
   font-family: "Montserrat";
   font-size: 35px;
 }
-
-.timeWrapper .label {
-  color: gray;
-}
-
-.timeWrapper .expire {
-  color: red;
-}
