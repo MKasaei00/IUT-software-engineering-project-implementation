@@ -85,6 +85,12 @@ const Task = ({
     const v = e.target.value;
 
     fn_map[k]?.(v);
+    if (k === "assigned_to") {
+      set_assigned_to_team("");
+    }
+    if (k === "assigned_to_team") {
+      set_assigned_to("");
+    }
   };
 
   useEffect(() => {
