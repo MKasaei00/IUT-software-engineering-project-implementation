@@ -112,7 +112,7 @@ const Task = ({
 
   const saveTask = async () => {
     if (role === roles.team_member) {
-      set_assigned_to(me.id);
+      set_assigned_to(me.pk);
     }
 
     if (role === roles.team_manager) {
@@ -134,7 +134,7 @@ const Task = ({
 
   const createTask = async () => {
     if (role === roles.team_member) {
-      set_assigned_to(me.id);
+      set_assigned_to(me.pk);
     }
 
     if (role === roles.team_manager) {
@@ -155,7 +155,7 @@ const Task = ({
   };
 
   const canChange =
-    isNew || (task && task.creator && me && task.creator.id === me.id);
+    isNew || (task && task.creator && me && task.creator.id === me.pk);
 
   let buttons;
   if (canChange) {

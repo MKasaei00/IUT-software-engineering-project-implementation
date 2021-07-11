@@ -128,7 +128,7 @@ const Tasks = (props) => {
   const renderButtons = (task) => {
     let buttons;
     const canAlter =
-      (props.me && task && task.creator && task.creator.id === props.me.id) ||
+      (props.me && task && task.creator && task.creator.id === props.me.pk) ||
       props.role === roles.project_manager;
 
     if (task.completion_status === task_status.not_completed) {
