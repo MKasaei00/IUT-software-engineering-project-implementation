@@ -11,9 +11,10 @@ import {
   Paper,
   Tab,
   Tabs,
+  Fab,
 } from "@material-ui/core";
 import Pagination from "@material-ui/lab/Pagination";
-import { Close, Check, MoreVert, Add } from "@material-ui/icons";
+import { Close, Check, MoreVert, Add, NotInterested } from "@material-ui/icons";
 import { red, green, yellow } from "@material-ui/core/colors";
 import { useSnackbar } from "notistack";
 import { connect } from "react-redux";
@@ -55,7 +56,6 @@ const useStyles = makeStyles((theme) => ({
     bottom: 0,
     right: 0,
     margin: theme.spacing(5),
-    backgroundColor: green[500],
   },
   nav: {
     margin: "auto",
@@ -118,15 +118,87 @@ const Tasks = (props) => {
   const cancelTask = (task_id) => {
     props.cancel_task(task_id, enqueueSnackbar);
   };
+  const rejectTask = (task_id) => {
+    props.reject_task(task_id, enqueueSnackbar);
+  };
   const completeTask = (task_id) => {
     props.complete_task(task_id, enqueueSnackbar);
   };
 
-  const canCancel = (task) => {
-    return (
+  const renderButtons = (task) => {
+    let buttons;
+    const canAlter =
       (props.me && task && task.creator && task.creator.id === props.me.id) ||
-      props.role === roles.project_manager
-    );
+      props.role === roles.project_manager;
+
+    if (task.completion_status === task_status.not_completed) {
+      buttons = (
+        <CardActions className={classes.buttons}>
+          {canAlter && (
+            <IconButton
+              aria-label="close"
+              className={classes.red}
+              onClick={cancelTask.bind(null, task.id)}
+            >
+              <Close />
+            </IconButton>
+          )}
+          <IconButton
+            aria-label="check"
+            className={classes.green}
+            onClick={completeTask.bind(null, task.id)}
+          >
+            <Check />
+          </IconButton>
+          <IconButton aria-label="view" onClick={viewTask.bind(null, task.id)}>
+            <MoreVert />
+          </IconButton>
+        </CardActions>
+      );
+    } else if (task.completion_status === task_status.check_pending) {
+      buttons = (
+        <CardActions className={classes.buttons}>
+          {canAlter && (
+            <>
+              <IconButton
+                aria-label="close"
+                className={classes.red}
+                onClick={cancelTask.bind(null, task.id)}
+              >
+                <Close />
+              </IconButton>
+              <IconButton
+                aria-label="reject"
+                className={classes.yellow}
+                onClick={rejectTask.bind(null, task.id)}
+              >
+                <NotInterested />
+              </IconButton>
+            </>
+          )}
+          <IconButton
+            aria-label="check"
+            className={classes.green}
+            onClick={completeTask.bind(null, task.id)}
+          >
+            <Check />
+          </IconButton>
+          <IconButton aria-label="view" onClick={viewTask.bind(null, task.id)}>
+            <MoreVert />
+          </IconButton>
+        </CardActions>
+      );
+    } else {
+      buttons = (
+        <CardActions className={classes.buttons}>
+          <IconButton aria-label="view" onClick={viewTask.bind(null, task.id)}>
+            <MoreVert />
+          </IconButton>
+        </CardActions>
+      );
+    }
+
+    return buttons;
   };
 
   return (
@@ -190,30 +262,7 @@ const Tasks = (props) => {
                             }
                           />
                         </CardContent>
-                        <CardActions className={classes.buttons}>
-                          <IconButton
-                            aria-label="close"
-                            className={classes.yellow}
-                            onClick={cancelTask.bind(null, task.id)}
-                          >
-                            <Close />
-                          </IconButton>
-                          <IconButton
-                            aria-label="check"
-                            className={classes.green}
-                            onClick={completeTask.bind(null, task.id)}
-                          >
-                            <Check />
-                          </IconButton>
-                          {canCancel && (
-                            <IconButton
-                              aria-label="view"
-                              onClick={viewTask.bind(null, task.id)}
-                            >
-                              <MoreVert />
-                            </IconButton>
-                          )}
-                        </CardActions>
+                        {renderButtons(task)}
                       </Card>
                     </Grid>
                   );
@@ -241,14 +290,14 @@ const Tasks = (props) => {
         role={props.role}
         isNew={isNew}
       />
-      <IconButton
+      <Fab
         aria-label="add"
         className={classes.addBtn}
         onClick={createNew}
-        size="medium"
+        color="primary"
       >
         <Add />
-      </IconButton>
+      </Fab>
     </Container>
   );
 };
