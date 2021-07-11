@@ -192,6 +192,7 @@ const Task = ({
           fullWidth
           value={title}
           onChange={handleField}
+          disabled={!canChange}
         />
         <Picker
           name="deadline"
@@ -200,6 +201,7 @@ const Task = ({
           fullWidth
           value={deadline}
           onChange={handleField}
+          disabled={!canChange}
         />
         <FormControl
           className={classes.formControl}
@@ -213,6 +215,7 @@ const Task = ({
             label="Team"
             value={assigned_to_team}
             onChange={handleField}
+            disabled={!canChange}
           >
             {Array.isArray(teams) &&
               teams.map((team) => {
@@ -236,6 +239,7 @@ const Task = ({
             label="Member"
             value={assigned_to}
             onChange={handleField}
+            disabled={!canChange}
           >
             {Array.isArray(members) &&
               members.map((member) => {
@@ -262,6 +266,7 @@ const Task = ({
           fullWidth
           value={title}
           onChange={handleField}
+          disabled={!canChange}
         />
         <Picker
           name="deadline"
@@ -270,6 +275,7 @@ const Task = ({
           fullWidth
           value={deadline}
           onChange={handleField}
+          disabled={!canChange}
         />
         <FormControl
           className={classes.formControl}
@@ -283,6 +289,7 @@ const Task = ({
             label="Member"
             value={assigned_to}
             onChange={handleField}
+            disabled={!canChange}
           >
             {Array.isArray(members) &&
               members.map((member) => {
@@ -309,6 +316,7 @@ const Task = ({
           fullWidth
           value={title}
           onChange={handleField}
+          disabled={!canChange}
         />
         <Picker
           name="deadline"
@@ -317,6 +325,7 @@ const Task = ({
           fullWidth
           value={deadline}
           onChange={handleField}
+          disabled={!canChange}
         />
       </DialogContent>
     );

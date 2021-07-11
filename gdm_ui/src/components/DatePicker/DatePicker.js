@@ -9,6 +9,7 @@ export default function MaterialUIPickers({
   fullWidth,
   variant,
   onChange,
+  disabled,
 }) {
   return (
     <MuiPickersUtilsProvider utils={MomentUtils}>
@@ -25,6 +26,7 @@ export default function MaterialUIPickers({
           onChange?.({ target: { name, value: date } });
         }}
         inputVariant={variant}
+        disabled={disabled}
       />
     </MuiPickersUtilsProvider>
   );
