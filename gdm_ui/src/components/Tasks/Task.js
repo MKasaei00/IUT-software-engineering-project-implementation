@@ -188,7 +188,13 @@ const Task = ({
     isNew || (task && task.creator && me && task.creator.id === me.pk);
 
   let buttons;
-  if (canChange) {
+  if (isNew) {
+    buttons = (
+      <IconButton color="inherit" aria-label="add" onClick={createTask}>
+        <AddBox />
+      </IconButton>
+    );
+  } else if (canChange) {
     if (task) {
       buttons = (
         <IconButton color="inherit" aria-label="save" onClick={saveTask}>
@@ -202,12 +208,6 @@ const Task = ({
         </IconButton>
       );
     }
-  } else if (isNew) {
-    buttons = (
-      <IconButton color="inherit" aria-label="add" onClick={createTask}>
-        <AddBox />
-      </IconButton>
-    );
   }
 
   let fields;
