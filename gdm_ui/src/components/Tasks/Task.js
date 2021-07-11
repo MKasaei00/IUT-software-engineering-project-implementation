@@ -60,7 +60,12 @@ const Task = ({
   const { enqueueSnackbar } = useSnackbar();
 
   const [title, set_title] = useState(task && task.title);
-  const [deadline, set_deadline] = useState(task && task.deadline);
+  const [deadline, set_deadline] = useState(
+    task &&
+      Array.isArray(task.deadlines) &&
+      task.deadlines[0] &&
+      task.deadlines[0].end_date
+  );
   const [assigned_to_team, set_assigned_to_team] = useState(
     task && task.assigned_to_team && task.assigned_to_team.id
   );
@@ -90,7 +95,11 @@ const Task = ({
       set_assigned_to("");
     } else if (task) {
       set_title(task.title);
-      set_deadline(task.deadline);
+      set_deadline(
+        Array.isArray(task.deadlines) &&
+          task.deadlines[0] &&
+          task.deadlines[0].end_date
+      );
       set_assigned_to_team(task.assigned_to_team && task.assigned_to_team.id);
       set_assigned_to(task.assigned_to && task.assigned_to.id);
     } else {
