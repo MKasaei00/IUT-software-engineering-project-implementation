@@ -177,15 +177,15 @@ const Tasks = (props) => {
               >
                 <NotInterested />
               </IconButton>
+              <IconButton
+                aria-label="check"
+                className={classes.green}
+                onClick={completeTask.bind(null, task.id)}
+              >
+                <Check />
+              </IconButton>
             </>
           )}
-          <IconButton
-            aria-label="check"
-            className={classes.green}
-            onClick={completeTask.bind(null, task.id)}
-          >
-            <Check />
-          </IconButton>
           <IconButton aria-label="view" onClick={viewTask.bind(null, task.id)}>
             <MoreVert />
           </IconButton>
