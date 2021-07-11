@@ -153,7 +153,8 @@ const Task = ({
     if (res !== false) handleClose();
   };
 
-  const canChange = task && task.creator && me && task.creator.id === me.id;
+  const canChange =
+    isNew || (task && task.creator && me && task.creator.id === me.id);
 
   let buttons;
   if (canChange) {
