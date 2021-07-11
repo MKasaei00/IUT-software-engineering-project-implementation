@@ -131,8 +131,20 @@ class TaskView(viewsets.ViewSet):
         if Task.objects.filter(id__exact=pk).count() == 0:
             raise Http404
         task = Task.objects.filter(id__exact=pk).first()
-        if task.creator == self.request.user:
+        if task.creator == self.request.user or ProjectManager.objects.filter(project__exact=task.project).filter(base_user__exact=self.request.user).count() != 0:
             task.completion_status = 'F'
+            task.save()
+            return Response(status=200)
+            
+        return Response(status=403)
+
+    @action(detail=True,methods=['post'])
+    def rejected(self,request,pk=None):
+        if Task.objects.filter(id__exact=pk).count() == 0:
+            raise Http404
+        task = Task.objects.filter(id__exact=pk).first()
+        if task.creator == self.request.user or ProjectManager.objects.filter(project__exact=task.project).filter(base_user__exact=self.request.user).count() != 0:
+            task.completion_status = 'NC'
             task.save()
             return Response(status=200)
             
@@ -253,18 +265,14 @@ class ProjectView(viewsets.ViewSet):
 
         return Response(NormalUserSerializer(queryset,many=True).data)
 
-
-
-
-@api_view()
-def get_team_members(request,pk):
-    queryset = set()
-    if Team.objects.filter(id__exact=pk).count() != 0 and TeamManager.objects.filter(team__exact=pk).first().base_user == request.user:
-        queryset.add(request.user)
-    else:
-        raise Http404
-    
-    for e in TeamMember.objects.filter(team__exact=pk):
-        queryset.add(e.base_user)
-
-    return Response(NormalUserSerializer(queryset,many=True).data)
+    @action(detail=True)
+    def team_members(self,request,pk=None):
+        queryset = set()
+        team = TeamManager.objects.filter(base_user__exact=self.request.user).filter(team__in=Team.objects.filter(project__exact=pk))
+        if team.count() != 0:
+            queryset.add(self.request.user)
+            for e in TeamMember.objects.filter(team__exact=team):
+                queryset.add(e.base_user)
+            return Response(NormalUserSerializer(queryset,many=True).data)
+        else:
+            raise Http404
