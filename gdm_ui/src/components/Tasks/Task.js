@@ -112,12 +112,16 @@ const Task = ({
   };
 
   const saveTask = async () => {
+    let def_assigned_to = assigned_to;
+    let def_assigned_to_team = assigned_to_team;
     if (role === roles.team_member) {
       set_assigned_to(me.pk);
+      def_assigned_to = me.pk;
     }
 
     if (role === roles.team_manager) {
       set_assigned_to_team(Array.isArray(teams) && teams[0] && teams[0].id);
+      def_assigned_to_team = Array.isArray(teams) && teams[0] && teams[0].id;
     }
 
     const res = await update_task(
@@ -125,8 +129,8 @@ const Task = ({
         task_id: task && task.id,
         title,
         deadline: moment(deadline).toISOString(),
-        assigned_to: assigned_to || null,
-        assigned_to_team: assigned_to_team || null,
+        assigned_to: def_assigned_to || null,
+        assigned_to_team: def_assigned_to_team || null,
       },
       enqueueSnackbar
     );
