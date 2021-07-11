@@ -134,7 +134,7 @@ const Task = ({
       def_assigned_to = me.pk;
     }
 
-    if (role === roles.team_manager) {
+    if (role === roles.team_manager && !def_assigned_to) {
       set_assigned_to_team(Array.isArray(teams) && teams[0] && teams[0].id);
       def_assigned_to_team = Array.isArray(teams) && teams[0] && teams[0].id;
     }
@@ -249,6 +249,9 @@ const Task = ({
             onChange={handleField}
             disabled={!canChange}
           >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
             {Array.isArray(teams) &&
               teams.map((team) => {
                 return (
@@ -273,6 +276,9 @@ const Task = ({
             onChange={handleField}
             disabled={!canChange}
           >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
             {Array.isArray(members) &&
               members.map((member) => {
                 return (
@@ -323,6 +329,9 @@ const Task = ({
             onChange={handleField}
             disabled={!canChange}
           >
+            <MenuItem value="">
+              <em>None</em>
+            </MenuItem>
             {Array.isArray(members) &&
               members.map((member) => {
                 return (
