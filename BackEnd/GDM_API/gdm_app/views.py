@@ -27,8 +27,9 @@ class TaskView(viewsets.ViewSet):
             if prjs.count() != 0 and prjs.filter(id__exact=project_pk).count() != 0:
                 queryset = Task.objects.filter(project__exact=project_pk)
         elif request.query_params['role'] == 'Team Manager':
-            team = TeamManager.objects.filter(base_user__exact=self.request.user).first().team
-            queryset = Task.objects.filter(Q(assigned_to_team__exact=team)|Q(assigned_to__exact=self.request.user))
+            teammanager = TeamManager.objects.filter(base_user__exact=self.request.user).filter(team__in=Team.objects.filter(project__exact=project_pk))
+            if teammanager.count() != 0:
+                queryset = Task.objects.filter(Q(assigned_to_team__in=teammanager.first().team)|Q(assigned_to__exact=self.request.user))
         else:
             queryset = Task.objects.filter(assigned_to__exact=self.request.user)
         
@@ -41,10 +42,10 @@ class TaskView(viewsets.ViewSet):
             raise Http404
 
         task = Task.objects.filter(id__exact=pk).first()
-        if ProjectManager.objects.filter(project__exact=task.project).count() != 0 and ProjectManager.objects.filter(project__exact=task.project).first().base_user == self.request.user:
+        if ProjectManager.objects.filter(project__exact=task.project).filter(base_user__exact=self.request.user).count() != 0: 
             return Response(TaskSerializer(task).data)
         if task.assigned_to_team is not None:
-            if TeamManager.objects.filter(team__exact=task.assigned_to_team).count() != 0 and  TeamManager.objects.filter(team__exact=task.assigned_to_team).first().base_user == self.request.user:
+            if TeamManager.objects.filter(team__exact=task.assigned_to_team).filter(base_user__exact=self.request.user).count() != 0:
                 return Response(TaskSerializer(task).data)
             else:
                 raise Http404
@@ -78,10 +79,10 @@ class TaskView(viewsets.ViewSet):
 
         params = request.data
         task = Task.objects.filter(id__exact=pk).first()
-        if ProjectManager.objects.filter(project__exact=task.project).count() != 0 and ProjectManager.objects.filter(project__exact=task.project).first().base_user == self.request.user:
+        if ProjectManager.objects.filter(project__exact=task.project).filter(base_user__exact=self.request.user).count() != 0: 
             pass
         elif task.assigned_to_team is not None:
-            if TeamManager.objects.filter(team__exact=task.assigned_to_team).count() != 0 and  TeamManager.objects.filter(team__exact=task.assigned_to_team).first().base_user == self.request.user:
+            if TeamManager.objects.filter(team__exact=task.assigned_to_team).filter(base_user__exact=self.request.user).count() != 0:
                 pass
             else:
                 return Response(status=403)
