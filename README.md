@@ -28,7 +28,7 @@ npm i
 then you need to make a new database in PostgreSQL with the name **'gdm_db'** and change the password for postgres user to **'1234'**
 you can do these by running these two query:
 ```
-ALTER USER postgres PASSWORD '1234';
+ALTER USER postgres PASSWORD '1234'
 CREATE DATABASE gdm_db
 ```
 
