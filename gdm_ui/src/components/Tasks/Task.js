@@ -124,8 +124,8 @@ const Task = ({
         task_id: task && task.id,
         title,
         deadline: moment(deadline).toISOString(),
-        assigned_to,
-        assigned_to_team,
+        assigned_to: assigned_to || null,
+        assigned_to_team: assigned_to_team || null,
       },
       enqueueSnackbar
     );
@@ -146,8 +146,8 @@ const Task = ({
         project_id: projectId,
         title,
         deadline: moment(deadline).toISOString(),
-        assigned_to,
-        assigned_to_team,
+        assigned_to: assigned_to || null,
+        assigned_to_team: assigned_to_team || null,
       },
       enqueueSnackbar
     );
