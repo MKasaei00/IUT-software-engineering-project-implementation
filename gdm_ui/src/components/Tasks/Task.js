@@ -54,6 +54,7 @@ const Task = ({
   get_all_teams,
   get_all_members,
   isNew,
+  getAllTasks,
 }) => {
   const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
@@ -129,7 +130,10 @@ const Task = ({
       },
       enqueueSnackbar
     );
-    if (res !== false) handleClose();
+    if (res !== false) {
+      getAllTasks?.();
+      handleClose();
+    }
   };
 
   const createTask = async () => {
@@ -151,7 +155,10 @@ const Task = ({
       },
       enqueueSnackbar
     );
-    if (res !== false) handleClose();
+    if (res !== false) {
+      getAllTasks?.();
+      handleClose();
+    }
   };
 
   const canChange =

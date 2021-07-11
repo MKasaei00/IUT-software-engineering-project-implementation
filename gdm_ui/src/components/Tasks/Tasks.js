@@ -115,14 +115,17 @@ const Tasks = (props) => {
       setOpen(true);
     }
   };
-  const cancelTask = (task_id) => {
-    props.cancel_task(task_id, enqueueSnackbar);
+  const cancelTask = async (task_id) => {
+    const res = await props.cancel_task(task_id, enqueueSnackbar);
+    if (res !== false) getTasks();
   };
-  const rejectTask = (task_id) => {
-    props.reject_task(task_id, enqueueSnackbar);
+  const rejectTask = async (task_id) => {
+    const res = await props.reject_task(task_id, enqueueSnackbar);
+    if (res !== false) getTasks();
   };
-  const completeTask = (task_id) => {
-    props.complete_task(task_id, enqueueSnackbar);
+  const completeTask = async (task_id) => {
+    const res = await props.complete_task(task_id, enqueueSnackbar);
+    if (res !== false) getTasks();
   };
 
   const renderButtons = (task) => {
@@ -289,6 +292,7 @@ const Tasks = (props) => {
         projectId={props.projectId}
         role={props.role}
         isNew={isNew}
+        getAllTasks={getTasks}
       />
       <Fab
         aria-label="add"

@@ -9,6 +9,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Menu from "@material-ui/core/Menu";
 import { connect } from "react-redux";
 import { useSnackbar } from "notistack";
+import { useHistory } from "react-router-dom";
 
 import * as creators from "../../store/actions/index";
 
@@ -29,6 +30,7 @@ const useStyles = makeStyles((theme) => ({
 
 const MenuAppBar = (props) => {
   const classes = useStyles();
+  const history = useHistory();
   const { enqueueSnackbar } = useSnackbar();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -41,9 +43,10 @@ const MenuAppBar = (props) => {
     setAnchorEl(null);
   };
 
-  const logout = () => {
+  const logout = async () => {
     handleClose();
-    props.logout(enqueueSnackbar);
+    const res = await props.logout(enqueueSnackbar);
+    if (res !== false) history.push("/");
   };
 
   return (
