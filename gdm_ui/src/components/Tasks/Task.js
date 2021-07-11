@@ -50,6 +50,8 @@ const Task = ({
   teams,
   create_task,
   update_task,
+  get_all_teams,
+  get_all_members,
   isNew,
 }) => {
   const classes = useStyles();
@@ -89,6 +91,17 @@ const Task = ({
       set_deadline(task.deadline);
       set_assigned_to_team(task.assigned_to_team && task.assigned_to_team.id);
       set_assigned_to(task.assigned_to && task.assigned_to.id);
+    } else {
+      if (role === roles.team_manager) {
+        get_all_members(
+          { project_id: projectId, my_members: true },
+          enqueueSnackbar
+        );
+      }
+      if (role === roles.project_manager) {
+        get_all_teams(projectId, enqueueSnackbar);
+        get_all_members({ project_id: projectId }, enqueueSnackbar);
+      }
     }
   }, [task, isNew]);
 
@@ -367,6 +380,14 @@ const mapDispatchToProps = (dispatch) => {
           { task_id, title, deadline, assigned_to, assigned_to_team },
           enqueueSnackbar
         )
+      ),
+
+    get_all_teams: (project_id, enqueueSnackbar) =>
+      dispatch(creators.get_all_teams({ project_id }, enqueueSnackbar)),
+
+    get_all_members: ({ project_id, my_members }, enqueueSnackbar) =>
+      dispatch(
+        creators.get_all_members({ project_id, my_members }, enqueueSnackbar)
       ),
   };
 };

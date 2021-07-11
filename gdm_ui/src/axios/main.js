@@ -18,3 +18,8 @@ export const projects = axios.create({
   baseURL: `${api_url}/api/projects`,
   withCredentials: true,
 });
+
+export const teams = axios.create({
+  baseURL: `${api_url}/api/teams`,
+  withCredentials: true,
+});

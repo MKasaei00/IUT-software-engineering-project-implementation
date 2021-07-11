@@ -60,14 +60,14 @@ export const update_task = (
 
 export const complete_task = ({ task_id }, enqueueSnackbar) => {
   return catchError(async () => {
-    const { data } = await tasks.post(`/${task_id}/completed`);
+    const { data } = await tasks.post(`/${task_id}/completed/`);
     return data;
   }, enqueueSnackbar);
 };
 
 export const cancel_task = ({ task_id }, enqueueSnackbar) => {
   return catchError(async () => {
-    const { data } = await tasks.post(`/${task_id}/canceled`);
+    const { data } = await tasks.post(`/${task_id}/canceled/`);
     return data;
   }, enqueueSnackbar);
 };
