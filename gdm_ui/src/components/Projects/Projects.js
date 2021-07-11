@@ -60,7 +60,7 @@ const Projects = (props) => {
     getProjects(value);
   };
 
-  const changeRole = async (e, role) => {
+  const changeRole = async (role, e) => {
     const res = await props.set_role(role, enqueueSnackbar);
     if (res === false) e.preventDefault();
   };

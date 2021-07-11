@@ -47,7 +47,7 @@ export const get_all_teams = ({ project_id }, enqueueSnackbar) => {
 };
 
 export const set_role = ({ role }, enqueueSnackbar) => {
-  return catchError((dispatch) => {
+  return catchError(async (dispatch) => {
     dispatch({ type: types.set_role, role });
   }, enqueueSnackbar);
 };
