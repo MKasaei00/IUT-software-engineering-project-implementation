@@ -108,19 +108,18 @@ const Task = ({
       );
       set_assigned_to_team(task.assigned_to_team && task.assigned_to_team.id);
       set_assigned_to(task.assigned_to && task.assigned_to.id);
-    } else {
-      if (role === roles.team_manager) {
-        get_all_members(
-          { project_id: projectId, my_members: true },
-          enqueueSnackbar
-        );
-      }
-      if (role === roles.project_manager) {
-        get_all_teams(projectId, enqueueSnackbar);
-        get_all_members({ project_id: projectId }, enqueueSnackbar);
-      }
     }
-  }, [task, isNew]);
+    if (role === roles.team_manager) {
+      get_all_members(
+        { project_id: projectId, my_members: true },
+        enqueueSnackbar
+      );
+    }
+    if (role === roles.project_manager) {
+      get_all_teams(projectId, enqueueSnackbar);
+      get_all_members({ project_id: projectId }, enqueueSnackbar);
+    }
+  }, [task, isNew, role]);
 
   const handleClose = () => {
     setOpen?.(false);
