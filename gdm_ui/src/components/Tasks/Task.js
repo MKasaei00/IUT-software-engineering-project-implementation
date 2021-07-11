@@ -110,6 +110,7 @@ const Task = ({
       set_assigned_to(task.assigned_to && task.assigned_to.id);
     }
     if (role === roles.team_manager) {
+      get_all_teams(projectId, enqueueSnackbar);
       get_all_members(
         { project_id: projectId, my_members: true },
         enqueueSnackbar
