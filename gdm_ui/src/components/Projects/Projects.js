@@ -60,6 +60,11 @@ const Projects = (props) => {
     getProjects(value);
   };
 
+  const changeRole = async (e, role) => {
+    const res = await props.set_role(role, enqueueSnackbar);
+    if (res === false) e.preventDefault();
+  };
+
   useEffect(() => {
     getProjects();
   }, []);
@@ -119,7 +124,11 @@ const Projects = (props) => {
                       {Array.isArray(project.roles) &&
                         project.roles.map((role) => {
                           return (
-                            <Link to={`/${project.id}?role=${role}`} key={role}>
+                            <Link
+                              to={`/${project.id}`}
+                              key={role}
+                              onClick={changeRole.bind(this, role)}
+                            >
                               <Button
                                 variant="outlined"
                                 color="primary"
@@ -161,6 +170,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     get_all_projects: ({ page, limit }, enqueueSnackbar) =>
       dispatch(creators.get_all_projects({ page, limit }, enqueueSnackbar)),
+    set_role: (role, enqueueSnackbar) =>
+      dispatch(creators.set_role({ role }, enqueueSnackbar)),
   };
 };
 

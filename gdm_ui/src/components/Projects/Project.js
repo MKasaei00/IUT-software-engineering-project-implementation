@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useParams, useLocation } from "react-router";
+import { useParams } from "react-router";
 import { connect } from "react-redux";
 import { useSnackbar } from "notistack";
 
@@ -8,12 +8,7 @@ import Tasks from "../Tasks/Tasks";
 import * as creators from "../../store/actions/index";
 
 const Project = (props) => {
-  const useQuery = () => {
-    return new URLSearchParams(useLocation().search);
-  };
-
   const { id } = useParams();
-  const query = useQuery();
 
   const { enqueueSnackbar } = useSnackbar();
   useEffect(() => {
@@ -22,7 +17,7 @@ const Project = (props) => {
 
   return (
     <div>
-      <Tasks projectId={id} role={query.get("role")} />
+      <Tasks projectId={id} role={props.role} />
     </div>
   );
 };
@@ -31,6 +26,7 @@ const mapStateToProps = (state) => {
   return {
     project: state.project,
     tasks: state.tasks,
+    role: state.role,
   };
 };
 

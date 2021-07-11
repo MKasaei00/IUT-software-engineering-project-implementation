@@ -8,6 +8,7 @@ const initState = {
   task: null,
   teams: [],
   members: [],
+  role: "",
 };
 
 const reducer = (state = initState, action) => {
@@ -26,6 +27,8 @@ const reducer = (state = initState, action) => {
       return { ...state, teams: action.teams };
     case types.set_members:
       return { ...state, members: action.members };
+    case types.set_role:
+      return { ...state, role: action.role };
     default:
       return state;
   }

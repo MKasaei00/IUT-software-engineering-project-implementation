@@ -5,6 +5,7 @@ export {
   get_project,
   get_all_members,
   get_all_teams,
+  set_role,
 } from "./projects";
 
 export {

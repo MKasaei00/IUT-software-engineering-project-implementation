@@ -45,3 +45,9 @@ export const get_all_teams = ({ project_id }, enqueueSnackbar) => {
     dispatch({ type: types.set_teams, teams: data });
   }, enqueueSnackbar);
 };
+
+export const set_role = ({ role }, enqueueSnackbar) => {
+  return catchError((dispatch) => {
+    dispatch({ type: types.set_role, role });
+  }, enqueueSnackbar);
+};

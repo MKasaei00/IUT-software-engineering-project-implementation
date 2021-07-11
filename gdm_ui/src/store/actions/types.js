@@ -9,3 +9,5 @@ export const set_task = "set_task";
 export const set_teams = "set_teams";
 
 export const set_members = "set_members";
+
+export const set_role = "set_role";
